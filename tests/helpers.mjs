@@ -86,3 +86,10 @@ export function allFiles(dir = ROOT, acc = []) {
   }
   return acc
 }
+
+/** The GitHub owner this package claims to live under. */
+export function declaredOwner() {
+  const match = /github\.com\/([^/]+)\//.exec(json('plugin.json').repository)
+  if (!match) throw new Error('plugin.json has no parseable GitHub repository URL')
+  return match[1]
+}

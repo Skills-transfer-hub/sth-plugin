@@ -1,8 +1,7 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { ROOT, json, read } from './helpers.mjs'
-import { currentOwner } from '../scripts/set-owner.mjs'
+import { ROOT, declaredOwner, json, read } from './helpers.mjs'
 
 /**
  * The package must not advertise a repository it does not live in. Every
@@ -10,7 +9,7 @@ import { currentOwner } from '../scripts/set-owner.mjs'
  * six-client outage that no other test would notice.
  */
 describe('the declared repository is the real one', () => {
-  const owner = currentOwner()
+  const owner = declaredOwner()
   const slug = `${owner}/sth-plugin`
 
   test('both manifests that name a repository agree', () => {
@@ -43,8 +42,7 @@ describe('the declared repository is the real one', () => {
     assert.equal(
       actual[1].toLowerCase(),
       slug.toLowerCase(),
-      'the manifests name a different repository than the one this clone came from — ' +
-        'run: node scripts/set-owner.mjs <owner>',
+      'the manifests name a different repository than the one this clone came from',
     )
   })
 })

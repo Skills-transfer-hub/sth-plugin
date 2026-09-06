@@ -32,22 +32,6 @@ member without those gets an empty toolbox rather than tools that fail on use.
 | Antigravity | copy this directory into `.agents/plugins/` or `~/.gemini/config/plugins/` |
 | Kimi | `kimi mcp add`, then copy `skills/` into `~/.agents/skills/` |
 
-## Moving the repository
-
-Every install command clones this repository by name, so the owner appears in
-two manifests and four commands. It is one command to change, and one test to
-prove it landed:
-
-```sh
-node scripts/set-owner.mjs <github-owner>   # after the transfer, not before
-npm test
-```
-
-`tests/identity.test.mjs` compares the declared repository against the actual
-`git remote`, so a package that advertises a repository it does not live in
-fails rather than shipping a six-client outage nobody notices until an install
-404s.
-
 ## Why there are five manifests
 
 There is no single plugin format. **Agent Plugins 1.0** (OpenAI, Microsoft, AWS,
