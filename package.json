@@ -9,7 +9,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test",
     "build:reference": "node scripts/build-reference.mjs",
     "check:reference": "node scripts/build-reference.mjs --check"
   }

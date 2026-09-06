@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { ENDPOINT, PLUGIN_NAME, exists, json, read, readSkill, skillNames } from './helpers.mjs'
+import { ENDPOINT, PLUGIN_NAME, exists, json, read, readSkill, skillNames } from '../scripts/manifest-helpers.mjs'
 
 /**
  * The four clients that read neither Agent Plugins 1.0 nor Claude Code's

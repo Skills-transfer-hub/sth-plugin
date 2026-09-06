@@ -2,7 +2,7 @@ import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
 import { readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
-import { ENDPOINT, PLUGIN_NAME, ROOT, exists, json, skillNames } from './helpers.mjs'
+import { ENDPOINT, PLUGIN_NAME, ROOT, exists, json, skillNames } from '../scripts/manifest-helpers.mjs'
 
 /**
  * Agent Plugins 1.0 — the vendor-neutral standard published by OpenAI,
