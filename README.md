@@ -103,15 +103,26 @@ it by hand — the test fails when it drifts.
 
 ## Known gaps
 
-- `.agents/plugins/marketplace.json` — the Codex repo marketplace. Deliberately
-  absent: its schema is not publicly documented at the time of writing, and a
-  guessed one is worse than none.
-- Tool `title` and annotations (`readOnlyHint`, `destructiveHint`,
-  `openWorldHint`) live on the server, not here. Both the Anthropic and OpenAI
-  directories reject submissions without them.
-- The endpoint is hard-coded to production. Overriding it for a self-hosted STH
-  needs `userConfig` on Claude Code, which is untested — an empty override
-  would interpolate to an empty URL and break every install.
+**The Codex repo marketplace (`.agents/plugins/marketplace.json`) is omitted.**
+Its location is documented, its schema is not, and a GitHub code search for the
+path returns no public example to copy. A guessed schema fails later and
+quietly, so the gap stays recorded rather than filled. Every other Codex install
+path works without it.
+
+**Self-hosting works today, without a configurable endpoint.** The URL is
+hard-coded to production, but nothing in `skills/`, `commands/` or `agents/`
+mentions it — they name tools, not hosts. A self-hosted STH is one command away:
+
+```sh
+claude mcp add --transport http sth https://your-host/api/mcp
+```
+
+Install the plugin for the skills, point `sth` at your own server, and the two
+compose. Doing it through `userConfig` instead is still untested: the CLI
+reports the raw `${user_config.…}` string rather than the resolved one, so how
+an unset value interpolates at connect time is unknown, and an empty URL would
+break every install. Two things were established: `description` is **required**
+on a `userConfig` entry, and an unset optional one does not block the install.
 
 ## License
 
