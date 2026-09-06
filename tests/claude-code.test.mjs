@@ -29,6 +29,28 @@ describe('Claude Code — plugin manifest', () => {
     }
   })
 
+  test('it does not re-declare a path that is already loaded by convention', () => {
+    // Found by installing, not by reading: pointing `hooks` at the standard
+    // hooks/hooks.json makes Claude Code load it twice and refuse the whole
+    // plugin —
+    //   "Duplicate hooks file detected ... The standard hooks/hooks.json is
+    //    loaded automatically, so manifest.hooks should only reference
+    //    additional hook files."
+    // A dangling-pointer check cannot catch this: the path exists, which is
+    // exactly the problem. `mcpServers` -> ./.mcp.json is fine; that one was
+    // verified to install and enable.
+    const conventional = { hooks: './hooks/hooks.json' }
+    for (const [field, path] of Object.entries(conventional)) {
+      assert.notEqual(manifest[field], path, `${field} must not point at the auto-loaded ${path}`)
+      assert.notEqual(manifest[field], path.replace('./', ''), field)
+    }
+  })
+
+  test('the hook file still exists at the conventional path', () => {
+    // Removing the pointer only works because the convention picks it up.
+    assert.ok(exists('hooks/hooks.json'))
+  })
+
   test('userConfig keys are shaped for the CLAUDE_PLUGIN_OPTION_ contract', () => {
     for (const [key, spec] of Object.entries(manifest.userConfig ?? {})) {
       assert.match(key, /^[a-z][a-z0-9_]*$/, `${key} will not survive env-var casing`)

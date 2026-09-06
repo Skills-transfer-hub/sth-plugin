@@ -79,9 +79,17 @@ describe('Codex', () => {
 
   test('the native manifest points at the shared components', () => {
     assert.equal(manifest.name, PLUGIN_NAME)
-    for (const key of ['skills', 'mcpServers', 'hooks']) {
+    for (const key of ['skills', 'mcpServers']) {
       assert.ok(exists(manifest[key].replace(/^\.\//, '')), `${key} points at a missing path`)
     }
+  })
+
+  test('hooks are left to the conventional path', () => {
+    // Codex documents hooks at hooks/hooks.json "or referenced in manifest".
+    // Claude Code proved that re-declaring the standard path double-loads it
+    // and kills the plugin, so the convention is the safer of the two here too.
+    assert.equal(manifest.hooks, undefined)
+    assert.ok(exists('hooks/hooks.json'))
   })
 
   test('the Agent Plugins root manifest agrees with it', () => {
