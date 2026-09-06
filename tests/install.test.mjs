@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { PLUGIN_NAME, exists, json, read } from './helpers.mjs'
+import { PLUGIN_NAME, exists, json, read } from '../scripts/manifest-helpers.mjs'
 
 /**
  * One test per supported install path: each asserts the files that command

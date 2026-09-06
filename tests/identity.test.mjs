@@ -1,7 +1,7 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { ROOT, declaredOwner, json, read } from './helpers.mjs'
+import { ROOT, declaredOwner, json, read } from '../scripts/manifest-helpers.mjs'
 
 /**
  * The package must not advertise a repository it does not live in. Every

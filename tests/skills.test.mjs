@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { MCP_TOOLS, exists, json, read, readSkill, skillNames } from './helpers.mjs'
+import { MCP_TOOLS, exists, json, read, readSkill, skillNames } from '../scripts/manifest-helpers.mjs'
 
 describe('Agent Skills contract', () => {
   for (const name of skillNames()) {
@@ -74,7 +74,15 @@ describe('the skills tell the truth about consent and secrets', () => {
   test('the curating agent is forbidden from writing', () => {
     const agent = read('agents/sth-librarian.md')
     assert.match(agent, /Never write/i)
-    assert.equal(/call `library_save`(?! )/.test(agent) && !/Do not call/.test(agent), false)
+    // Assert on the sentence, not on a regex that happened to evaluate false.
+    // The previous form used a `(?! )` lookahead that failed on any trailing
+    // space, so it returned false even for "Always call `library_save`" — the
+    // exact regression it was meant to catch.
+    assert.match(agent, /(?:Do not|Never) call `library_save`/i)
+    for (const line of agent.split('\n')) {
+      if (!line.includes('`library_save`')) continue
+      assert.match(line, /\b(?:do not|never|not)\b/i, `permissive mention: ${line.trim()}`)
+    }
   })
 
   test('the save command shows the body before writing it', () => {

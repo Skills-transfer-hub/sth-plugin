@@ -2,7 +2,7 @@ import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { PLUGIN_NAME, ROOT, exists, frontmatter, json, read } from './helpers.mjs'
+import { PLUGIN_NAME, ROOT, exists, frontmatter, json, read } from '../scripts/manifest-helpers.mjs'
 
 /** Anthropic sat out Agent Plugins 1.0, so Claude Code needs its own manifest. */
 describe('Claude Code — plugin manifest', () => {
@@ -93,10 +93,20 @@ describe('Claude Code — hooks', () => {
     }
   })
 
+  test('the nudge rides an event that actually reaches the model', () => {
+    // Plain stdout is added as context only for UserPromptSubmit,
+    // UserPromptExpansion, SessionStart and PostModelSwitch. On Stop it goes to
+    // the debug log, and the only way to reach the model there is
+    // `decision: "block"` — refusing to let the session end, which is far too
+    // heavy for an unsolicited suggestion. A hook on Stop is a silent no-op.
+    assert.ok(hooks.hooks.SessionStart, 'the nudge must run where stdout is injected')
+    assert.equal(hooks.hooks.Stop, undefined, 'Stop discards plain stdout')
+  })
+
   test('the capture hook stays silent unless the user opted in', () => {
     // Hooks are trusted at install time; a chatty default gets the whole
     // plugin disabled, taking the skills with it.
-    const script = read('scripts/offer-capture.sh')
+    const script = read('scripts/session-context.sh')
     assert.match(script, /CLAUDE_PLUGIN_OPTION_CAPTURE_ON_STOP/)
     assert.match(script, /\|\|\s*exit 0/)
     assert.ok(

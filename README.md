@@ -64,7 +64,7 @@ location, and conformant clients must ignore files they do not recognise.
 ## Tests
 
 ```sh
-npm test              # 93 checks, no dependencies
+npm test              # 100 checks, no dependencies
 npm run check:reference
 ```
 
@@ -75,11 +75,12 @@ executable. One file per contract:
 | --- | --- |
 | `tests/package.test.mjs` | one identity across five manifests, three MCP files that agree, no credentials anywhere |
 | `tests/agent-plugins.test.mjs` | Agent Plugins 1.0: closed field set, declared transports, skills discoverable at exactly one level |
-| `tests/claude-code.test.mjs` | manifest pointers resolve, marketplace entry, hooks reach through `CLAUDE_PLUGIN_ROOT` and stay opt-in |
+| `tests/claude-code.test.mjs` | manifest pointers resolve and do not duplicate a conventional path, marketplace entry, the hook runs on an event that reaches the model and stays opt-in |
 | `tests/native-formats.test.mjs` | Antigravity, Gemini CLI, Cursor, Codex, and Kimi's portability constraint |
 | `tests/skills.test.mjs` | front matter, description quality, non-overlapping triggers, no tool named that the server does not expose |
 | `tests/reference.test.mjs` | the compatibility file matches the generator; the matrix is internally coherent |
 | `tests/install.test.mjs` | one case per install command in the table above |
+| `tests/identity.test.mjs` | the declared repository is the one this clone actually came from |
 
 `skills/sth-transfer/reference/compatibility.md` is **generated** by
 `scripts/build-reference.mjs` from `data/sth-capabilities-v1.json`. Do not edit

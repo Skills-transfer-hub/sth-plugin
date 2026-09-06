@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { read } from './helpers.mjs'
+import { read } from '../scripts/manifest-helpers.mjs'
 import { loadManifest, renderReference } from '../scripts/build-reference.mjs'
 
 describe('the compatibility reference is derived, not retyped', () => {

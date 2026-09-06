@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {
   ENDPOINT, IDENTITY_MANIFESTS, MCP_MANIFESTS, PLUGIN_NAME, VERSION,
   allFiles, json, read,
-} from './helpers.mjs'
+} from '../scripts/manifest-helpers.mjs'
 
 describe('every manifest parses', () => {
   for (const path of [...IDENTITY_MANIFESTS, ...MCP_MANIFESTS, '.claude-plugin/marketplace.json']) {
@@ -23,9 +23,15 @@ describe('one identity across five manifest families', () => {
   }
 
   test('descriptions are identical, not merely similar', () => {
-    const descriptions = new Set(IDENTITY_MANIFESTS.map((path) => json(path).description))
-    // Gemini's manifest is allowed a shorter line; everything else must match.
-    assert.ok(descriptions.size <= 2, `too many distinct descriptions: ${descriptions.size}`)
+    // Counting distinct values was the wrong shape: `size <= 2` also passes
+    // when a manifest drifts onto Gemini's shorter line, leaving two against
+    // three. Name the exception instead of budgeting for one.
+    const shared = IDENTITY_MANIFESTS.filter((path) => path !== 'gemini-extension.json')
+    const reference = json(shared[0]).description
+    for (const path of shared) {
+      assert.equal(json(path).description, reference, `${path} drifted`)
+    }
+    assert.ok(json('gemini-extension.json').description.length > 20)
   })
 })
 
@@ -69,8 +75,12 @@ describe('the package carries no credentials', () => {
       /\b[A-Fa-f0-9]{40,}\b/,
       /-----BEGIN [A-Z ]*PRIVATE KEY-----/,
     ]
+    // Directory submission wants an icon and screenshots, so binaries are
+    // coming. Decoding a PNG as UTF-8 and running a hex pattern over the
+    // result reports a credential in an image; skip them by extension.
+    const BINARY = /\.(png|jpe?g|gif|webp|ico|pdf|woff2?|ttf|otf|mp4|zip|gz)$/i
     for (const file of allFiles()) {
-      if (file.startsWith('tests/')) continue
+      if (file.startsWith('tests/') || BINARY.test(file)) continue
       const content = read(file)
       for (const pattern of patterns) {
         assert.equal(pattern.test(content), false, `${file} matches ${pattern}`)
