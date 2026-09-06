@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # No dependencies on purpose: this package is cloned onto other people's
+      # machines, and `npm install` in a plugin directory is a smell.
+      - name: Package contract (six clients)
+        run: npm test
+      - name: Compatibility reference is not stale
+        run: npm run check:reference

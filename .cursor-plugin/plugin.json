@@ -1,8 +1,11 @@
 {
   "name": "sth",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Search, reuse and publish your team's prompts and AI artifacts, and port them between AI coding tools.",
   "author": "Skills Transfer Hub",
   "keywords": ["prompts", "library", "skills", "mcp", "team"],
+  "skills": "./skills",
+  "commands": "./commands",
+  "agents": "./agents",
   "mcpServers": "./mcp.json"
 }

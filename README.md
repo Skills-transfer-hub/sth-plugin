@@ -5,9 +5,9 @@ Cursor, GitHub Copilot, VS Code, Kiro, Antigravity and Gemini CLI. It wires up
 the STH remote MCP connector and ships the skills that tell an agent when to
 reach for it.
 
-**Status: skeleton.** The manifests below are in place and the connector is
-live, but `skills/` is empty — installing this today gets you the MCP server and
-nothing else. See [What is still missing](#what-is-still-missing).
+Two skills, four commands, one curating sub-agent, one opt-in hook, and the
+MCP connector — from a single directory, with a test suite that holds each
+client's contract.
 
 ## What it connects to
 
@@ -61,23 +61,41 @@ files at their native paths rather than under reverse-domain directories
 (`com.anthropic.claude-code/`). Those clients do not look in the namespaced
 location, and conformant clients must ignore files they do not recognise.
 
-## What is still missing
+## Tests
 
-- `skills/sth-library/SKILL.md` — search before writing, save what proves itself
-- `skills/sth-transfer/SKILL.md` + generated `reference/compatibility.md` — the
-  six-target compatibility matrix
-- `commands/` and `agents/` — Claude Code and Cursor only
-- `hooks/hooks.json` — opt-in capture at the end of a session
+```sh
+npm test              # 93 checks, no dependencies
+npm run check:reference
+```
+
+The suite is the claim that this package works in six clients, made
+executable. One file per contract:
+
+| File | Holds |
+| --- | --- |
+| `tests/package.test.mjs` | one identity across five manifests, three MCP files that agree, no credentials anywhere |
+| `tests/agent-plugins.test.mjs` | Agent Plugins 1.0: closed field set, declared transports, skills discoverable at exactly one level |
+| `tests/claude-code.test.mjs` | manifest pointers resolve, marketplace entry, hooks reach through `CLAUDE_PLUGIN_ROOT` and stay opt-in |
+| `tests/native-formats.test.mjs` | Antigravity, Gemini CLI, Cursor, Codex, and Kimi's portability constraint |
+| `tests/skills.test.mjs` | front matter, description quality, non-overlapping triggers, no tool named that the server does not expose |
+| `tests/reference.test.mjs` | the compatibility file matches the generator; the matrix is internally coherent |
+| `tests/install.test.mjs` | one case per install command in the table above |
+
+`skills/sth-transfer/reference/compatibility.md` is **generated** by
+`scripts/build-reference.mjs` from `data/sth-capabilities-v1.json`. Do not edit
+it by hand — the test fails when it drifts.
+
+## Known gaps
+
 - `.agents/plugins/marketplace.json` — the Codex repo marketplace. Deliberately
-  absent: its schema is not documented publicly at the time of writing, and a
+  absent: its schema is not publicly documented at the time of writing, and a
   guessed one is worse than none.
 - Tool `title` and annotations (`readOnlyHint`, `destructiveHint`,
-  `openWorldHint`) on the server side. Both the Anthropic and OpenAI directories
-  reject submissions without them.
-
-Manifests and the compatibility reference are **generated** from the STH
-dashboard, where the tool list and the capabilities manifest already live. Do
-not hand-edit them here.
+  `openWorldHint`) live on the server, not here. Both the Anthropic and OpenAI
+  directories reject submissions without them.
+- The endpoint is hard-coded to production. Overriding it for a self-hosted STH
+  needs `userConfig` on Claude Code, which is untested — an empty override
+  would interpolate to an empty URL and break every install.
 
 ## License
 

@@ -1,0 +1,16 @@
+{
+  "name": "sth-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Packaging tests and reference generator for the STH agent plugin.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "build:reference": "node scripts/build-reference.mjs",
+    "check:reference": "node scripts/build-reference.mjs --check"
+  }
+}

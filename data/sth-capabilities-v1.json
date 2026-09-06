@@ -1,0 +1,621 @@
+{
+  "schema_version": 1,
+  "cli_version": "dev",
+  "targets": [
+    "antigravity",
+    "claude",
+    "codex",
+    "copilot",
+    "cursor",
+    "gemini"
+  ],
+  "artifact_kinds": [
+    "agent",
+    "command",
+    "instruction",
+    "rule",
+    "skill",
+    "workflow"
+  ],
+  "target_specs": [
+    {
+      "kind": "antigravity",
+      "display_name": "Google Antigravity",
+      "root_dir": ".agents",
+      "detect_markers": [
+        {
+          "path": ".agents/agents",
+          "evidence": ".agents/agents/"
+        },
+        {
+          "path": ".agents/workflows",
+          "evidence": ".agents/workflows/"
+        },
+        {
+          "path": ".agents/rules",
+          "evidence": ".agents/rules/"
+        }
+      ],
+      "dialects": {
+        "agent": "antigravity.agent.v1",
+        "command": "antigravity.workflow.v1",
+        "instruction": "antigravity.rule.v1",
+        "rule": "antigravity.rule.v1",
+        "skill": "agent-skills.v1",
+        "workflow": "antigravity.workflow.v1"
+      },
+      "native_paths": {
+        "agent": [
+          ".agents/agents/*/agent.md",
+          ".agents/agents.md"
+        ],
+        "instruction": [
+          ".agents/agents.md"
+        ],
+        "rule": [
+          ".agents/rules/**/*.md"
+        ],
+        "skill": [
+          ".agents/skills/*/SKILL.md"
+        ],
+        "workflow": [
+          ".agents/workflows/**/*.md"
+        ]
+      },
+      "validator": "antigravity-v1",
+      "maturity": "stable"
+    },
+    {
+      "kind": "claude",
+      "display_name": "Claude Code",
+      "root_dir": ".claude",
+      "detect_markers": [
+        {
+          "path": ".claude",
+          "evidence": ".claude"
+        },
+        {
+          "path": "CLAUDE.md",
+          "evidence": "CLAUDE.md"
+        }
+      ],
+      "dialects": {
+        "agent": "claude.agent.v1",
+        "command": "claude.command.v1",
+        "instruction": "claude.instruction.v1",
+        "rule": "claude.rule.v1",
+        "skill": "agent-skills.v1",
+        "workflow": "claude.workflow.v1"
+      },
+      "native_paths": {
+        "agent": [
+          ".claude/agents/**/*.md"
+        ],
+        "command": [
+          ".claude/commands/**/*.md"
+        ],
+        "instruction": [
+          "CLAUDE.md",
+          "**/CLAUDE.md"
+        ],
+        "rule": [
+          ".claude/rules/**/*.md"
+        ],
+        "skill": [
+          ".claude/skills/*/SKILL.md"
+        ],
+        "workflow": [
+          ".claude/workflows/**/*.js"
+        ]
+      },
+      "validator": "claude-v1",
+      "maturity": "stable",
+      "minimum_version": "2.1.154"
+    },
+    {
+      "kind": "codex",
+      "display_name": "OpenAI Codex",
+      "root_dir": ".codex",
+      "detect_markers": [
+        {
+          "path": ".codex",
+          "evidence": ".codex"
+        },
+        {
+          "path": "AGENTS.md",
+          "evidence": "AGENTS.md"
+        }
+      ],
+      "dialects": {
+        "agent": "codex.agent.v1",
+        "command": "agent-skills.v1",
+        "instruction": "agents-md.v1",
+        "rule": "codex.execution-rule.v1",
+        "skill": "agent-skills.v1"
+      },
+      "native_paths": {
+        "agent": [
+          ".codex/agents/*.toml"
+        ],
+        "instruction": [
+          "AGENTS.md",
+          "**/AGENTS.md"
+        ],
+        "rule": [
+          ".codex/rules/*.rules"
+        ],
+        "skill": [
+          ".agents/skills/*/SKILL.md"
+        ]
+      },
+      "validator": "codex-v1",
+      "maturity": "stable"
+    },
+    {
+      "kind": "copilot",
+      "display_name": "GitHub Copilot",
+      "root_dir": ".github",
+      "detect_markers": [
+        {
+          "path": ".github/copilot-instructions.md",
+          "evidence": ".github/copilot-instructions.md"
+        },
+        {
+          "path": ".github/instructions",
+          "evidence": ".github/instructions/"
+        }
+      ],
+      "dialects": {
+        "agent": "copilot.agent.v1",
+        "command": "copilot.prompt.v1",
+        "instruction": "agents-md.v1",
+        "rule": "copilot.rule.v1",
+        "skill": "agent-skills.v1"
+      },
+      "native_paths": {
+        "agent": [
+          ".github/agents/*.agent.md"
+        ],
+        "command": [
+          ".github/prompts/*.prompt.md"
+        ],
+        "instruction": [
+          ".github/copilot-instructions.md",
+          "AGENTS.md"
+        ],
+        "rule": [
+          ".github/instructions/*.instructions.md"
+        ],
+        "skill": [
+          ".agents/skills/*/SKILL.md",
+          ".github/skills/*/SKILL.md"
+        ]
+      },
+      "validator": "copilot-v1",
+      "maturity": "stable"
+    },
+    {
+      "kind": "cursor",
+      "display_name": "Cursor",
+      "root_dir": ".cursor",
+      "detect_markers": [
+        {
+          "path": ".cursor",
+          "evidence": ".cursor"
+        },
+        {
+          "path": "AGENTS.md",
+          "evidence": "AGENTS.md"
+        }
+      ],
+      "dialects": {
+        "agent": "cursor.agent.v1",
+        "instruction": "agents-md.v1",
+        "rule": "cursor.rule.v1",
+        "skill": "agent-skills.v1"
+      },
+      "native_paths": {
+        "agent": [
+          ".cursor/agents/*.md"
+        ],
+        "instruction": [
+          "AGENTS.md",
+          "**/AGENTS.md"
+        ],
+        "rule": [
+          ".cursor/rules/*.mdc"
+        ],
+        "skill": [
+          ".agents/skills/*/SKILL.md",
+          ".cursor/skills/*/SKILL.md"
+        ]
+      },
+      "validator": "cursor-v1",
+      "maturity": "stable"
+    },
+    {
+      "kind": "gemini",
+      "display_name": "Gemini CLI",
+      "root_dir": ".gemini",
+      "detect_markers": [
+        {
+          "path": ".gemini/agents",
+          "evidence": ".gemini/agents/"
+        },
+        {
+          "path": ".gemini/commands",
+          "evidence": ".gemini/commands/"
+        },
+        {
+          "path": "GEMINI.md",
+          "evidence": "GEMINI.md"
+        }
+      ],
+      "dialects": {
+        "agent": "gemini.agent.v1",
+        "command": "gemini.command.v1",
+        "instruction": "gemini.instruction.v1",
+        "skill": "agent-skills.v1"
+      },
+      "native_paths": {
+        "agent": [
+          ".gemini/agents/*.md"
+        ],
+        "command": [
+          ".gemini/commands/**/*.toml"
+        ],
+        "instruction": [
+          "GEMINI.md",
+          "**/GEMINI.md"
+        ],
+        "skill": [
+          ".agents/skills/*/SKILL.md",
+          ".gemini/skills/*/SKILL.md"
+        ]
+      },
+      "validator": "gemini-v1",
+      "maturity": "stable"
+    }
+  ],
+  "compatibility": [
+    {
+      "target_kind": "antigravity",
+      "artifact_kind": "agent",
+      "level": "lossy",
+      "surface": "Antigravity",
+      "destination": ".agents/agents/{name}/agent.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "antigravity",
+      "artifact_kind": "command",
+      "level": "lossy",
+      "surface": "Antigravity",
+      "destination": ".agents/workflows/{name}.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "antigravity",
+      "artifact_kind": "instruction",
+      "level": "lossy",
+      "surface": "Antigravity",
+      "destination": ".agents/rules/{name}.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "antigravity",
+      "artifact_kind": "rule",
+      "level": "lossy",
+      "surface": "Antigravity",
+      "destination": ".agents/rules/{name}.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "antigravity",
+      "artifact_kind": "skill",
+      "level": "exact",
+      "surface": "Antigravity",
+      "destination": ".agents/skills/{name}/SKILL.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "antigravity",
+      "artifact_kind": "workflow",
+      "level": "native-only",
+      "surface": "Antigravity",
+      "destination": ".agents/workflows/{name}.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "claude",
+      "artifact_kind": "agent",
+      "level": "lossy",
+      "surface": "Claude Code",
+      "destination": ".claude/agents/{name}.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "claude",
+      "artifact_kind": "command",
+      "level": "lossy",
+      "surface": "Claude Code",
+      "destination": ".claude/commands/{name}.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "legacy"
+    },
+    {
+      "target_kind": "claude",
+      "artifact_kind": "instruction",
+      "level": "lossy",
+      "surface": "Claude Code",
+      "destination": ".claude/rules/{name}.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "claude",
+      "artifact_kind": "rule",
+      "level": "lossy",
+      "surface": "Claude Code",
+      "destination": ".claude/rules/{name}.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "claude",
+      "artifact_kind": "skill",
+      "level": "exact",
+      "surface": "Claude Code",
+      "destination": ".claude/skills/{name}/SKILL.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "claude",
+      "artifact_kind": "workflow",
+      "level": "native-only",
+      "surface": "Claude Code",
+      "destination": ".claude/workflows/{name}.js",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "experimental",
+      "minimum_version": "2.1.154"
+    },
+    {
+      "target_kind": "codex",
+      "artifact_kind": "agent",
+      "level": "lossy",
+      "surface": "Codex",
+      "destination": ".codex/agents/{name}.toml",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "codex",
+      "artifact_kind": "command",
+      "level": "lossy",
+      "surface": "Codex",
+      "destination": ".agents/skills/{name}/SKILL.md",
+      "invocation": "${name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "codex",
+      "artifact_kind": "instruction",
+      "level": "lossy",
+      "surface": "Codex",
+      "destination": "AGENTS.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "codex",
+      "artifact_kind": "rule",
+      "level": "native-only",
+      "surface": "Codex",
+      "destination": ".codex/rules/{name}.rules",
+      "implemented": true,
+      "maturity": "experimental"
+    },
+    {
+      "target_kind": "codex",
+      "artifact_kind": "skill",
+      "level": "exact",
+      "surface": "Codex",
+      "destination": ".agents/skills/{name}/SKILL.md",
+      "invocation": "${name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "codex",
+      "artifact_kind": "workflow",
+      "level": "unsupported",
+      "surface": "Codex",
+      "implemented": false,
+      "reason": "Codex has no project workflow file contract",
+      "maturity": "unsupported"
+    },
+    {
+      "target_kind": "copilot",
+      "artifact_kind": "agent",
+      "level": "lossy",
+      "surface": "Copilot",
+      "destination": ".github/agents/{name}.agent.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "copilot",
+      "artifact_kind": "command",
+      "level": "lossy",
+      "surface": "Copilot",
+      "destination": ".github/prompts/{name}.prompt.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "copilot",
+      "artifact_kind": "instruction",
+      "level": "lossy",
+      "surface": "Copilot",
+      "destination": "AGENTS.md + .github/sth/instructions/{name}.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "copilot",
+      "artifact_kind": "rule",
+      "level": "lossy",
+      "surface": "Copilot",
+      "destination": ".github/instructions/{name}.instructions.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "copilot",
+      "artifact_kind": "skill",
+      "level": "exact",
+      "surface": "Copilot",
+      "destination": ".agents/skills/{name}/SKILL.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "copilot",
+      "artifact_kind": "workflow",
+      "level": "unsupported",
+      "surface": "Copilot",
+      "implemented": false,
+      "reason": "Copilot workflows are outside the V1 artifact contract",
+      "maturity": "unsupported"
+    },
+    {
+      "target_kind": "cursor",
+      "artifact_kind": "agent",
+      "level": "lossy",
+      "surface": "Cursor",
+      "destination": ".cursor/agents/{name}.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "cursor",
+      "artifact_kind": "command",
+      "level": "unsupported",
+      "surface": "Cursor",
+      "implemented": false,
+      "reason": "Cursor commands are not advertised without a current certified contract",
+      "maturity": "unsupported"
+    },
+    {
+      "target_kind": "cursor",
+      "artifact_kind": "instruction",
+      "level": "lossy",
+      "surface": "Cursor",
+      "destination": "AGENTS.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "cursor",
+      "artifact_kind": "rule",
+      "level": "lossy",
+      "surface": "Cursor",
+      "destination": ".cursor/rules/{name}.mdc",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "cursor",
+      "artifact_kind": "skill",
+      "level": "exact",
+      "surface": "Cursor",
+      "destination": ".agents/skills/{name}/SKILL.md",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "cursor",
+      "artifact_kind": "workflow",
+      "level": "unsupported",
+      "surface": "Cursor",
+      "implemented": false,
+      "reason": "Cursor workflows are outside the V1 artifact contract",
+      "maturity": "unsupported"
+    },
+    {
+      "target_kind": "gemini",
+      "artifact_kind": "agent",
+      "level": "lossy",
+      "surface": "Gemini CLI",
+      "destination": ".gemini/agents/{name}.md",
+      "invocation": "@{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "gemini",
+      "artifact_kind": "command",
+      "level": "lossy",
+      "surface": "Gemini CLI",
+      "destination": ".gemini/commands/{name}.toml",
+      "invocation": "/{name}",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "gemini",
+      "artifact_kind": "instruction",
+      "level": "lossy",
+      "surface": "Gemini CLI",
+      "destination": "GEMINI.md",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "gemini",
+      "artifact_kind": "rule",
+      "level": "unsupported",
+      "surface": "Gemini CLI",
+      "implemented": false,
+      "reason": "Gemini CLI has no project rule contract distinct from GEMINI.md",
+      "maturity": "unsupported"
+    },
+    {
+      "target_kind": "gemini",
+      "artifact_kind": "skill",
+      "level": "exact",
+      "surface": "Gemini CLI",
+      "destination": ".agents/skills/{name}/SKILL.md",
+      "invocation": "/skills reload",
+      "implemented": true,
+      "maturity": "stable"
+    },
+    {
+      "target_kind": "gemini",
+      "artifact_kind": "workflow",
+      "level": "unsupported",
+      "surface": "Gemini CLI",
+      "implemented": false,
+      "reason": "Gemini CLI has no project workflow file contract",
+      "maturity": "unsupported"
+    }
+  ]
+}

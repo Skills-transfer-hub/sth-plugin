@@ -1,8 +1,10 @@
 {
   "name": "sth",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Search, reuse and publish your team's prompts and AI artifacts.",
   "mcpServers": {
-    "sth": { "httpUrl": "https://mcp.skillsth.com/api/mcp" }
+    "sth": {
+      "httpUrl": "https://mcp.skillsth.com/api/mcp"
+    }
   }
 }
