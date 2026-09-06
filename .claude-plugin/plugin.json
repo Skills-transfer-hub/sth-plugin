@@ -1,0 +1,12 @@
+{
+  "name": "sth",
+  "displayName": "Skills Transfer Hub",
+  "version": "0.0.1",
+  "description": "Search, reuse and publish your team's prompts and AI artifacts, and port them between AI coding tools.",
+  "author": { "name": "Skills Transfer Hub", "url": "https://skillsth.com" },
+  "homepage": "https://skillsth.com/docs",
+  "repository": "https://github.com/Skills-transfer-hub/sth-plugin",
+  "license": "MIT",
+  "keywords": ["prompts", "library", "skills", "mcp", "team"],
+  "mcpServers": "./.mcp.json"
+}

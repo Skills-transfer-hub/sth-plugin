@@ -1,0 +1,12 @@
+{
+  "name": "skillsth",
+  "owner": { "name": "Skills Transfer Hub", "url": "https://skillsth.com" },
+  "description": "The STH agent plugin.",
+  "plugins": [
+    {
+      "name": "sth",
+      "source": "./",
+      "description": "Search, reuse and publish your team's prompts and AI artifacts, and port them between AI coding tools."
+    }
+  ]
+}
