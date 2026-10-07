@@ -16,4 +16,8 @@ Port an artifact between AI coding tools: $ARGUMENTS
    - `unsupported` — say so and stop. Do not produce a lookalike file.
 4. If the cell is `implemented: false`, give the manual steps rather than
    claiming `sth` will perform the conversion.
-5. Propose the `sth` command rather than hand-writing the file layout.
+5. In a host with local workspace access, inspect the `sth` CLI and its help,
+   execute the supported conversion authorized by the user, and verify its
+   output rather than stopping at a proposed command. Preserve existing files.
+   Without local access or the required CLI, explain the actual limit and give
+   the supported handoff from the transfer skill; never claim it was installed.

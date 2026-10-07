@@ -16,8 +16,10 @@
 [ "${CLAUDE_PLUGIN_OPTION_CAPTURE_ON_STOP}" = "true" ] || exit 0
 
 cat <<'EOF'
-When this session produces something reusable — a prompt that worked, a rule, a
-skill — offer to save it to the team STH library with library_save. Ask first,
-show the exact body, and skip it entirely if nothing is worth a colleague's
-time. Do not save secrets or anything specific to this repository.
+When this session produces reusable work, offer once to save that result to the
+organization's STH library. Follow the sth-library skill: an explicit request
+to save clearly selected content is already authorization; do not ask again.
+For an unsolicited suggestion or a substantive rewrite, show the proposed body
+and shared destination and ask once. Skip the suggestion if nothing is useful
+or the user declined. Do not save secrets or silently remove useful context.
 EOF

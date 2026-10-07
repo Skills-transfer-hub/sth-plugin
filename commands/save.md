@@ -1,21 +1,21 @@
 ---
 name: save
-description: Save something produced in this session to the team STH library.
+description: Save selected work to the STH team library, using the authorization already given.
 ---
 
-Save to the team's STH library: $ARGUMENTS
+Save the selected work to the organization's STH library: $ARGUMENTS
 
-1. Decide what exactly is being saved. If the user did not name it, propose the
-   most reusable artifact from this session and ask before continuing.
-2. Call `library_search` on its subject first. If something close already
-   exists, show it and ask whether to update that item instead of adding a
-   near-duplicate.
-3. Draft the entry and **show it to the user before writing**: `kind`
-   (`prompt` or `artifact`), an imperative `title`, and the full `body`,
-   stripped of anything specific to this repository or session.
-4. Check the body for secrets, tokens, keys, customer names or personal data.
-   If you find any, stop and say so — do not redact silently and save anyway.
-5. On approval, call `library_save` with `source_tool` and `source_model` filled
-   in.
+Read and follow [sth-library](../skills/sth-library/SKILL.md), including its
+authorization, duplicate, privacy and connection rules. Reply in the user's
+language and use MCP directly; saving does not require the `sth` CLI.
 
-Never call `library_save` without explicit approval of the exact body.
+- Use the argument or clearly selected/last visible result. If several items
+  are plausible, ask one short question to identify which one.
+- This command authorizes saving the clearly selected content to the shared
+  STH library. Announce the title and destination, then proceed without another
+  confirmation. Do not require the user to approve the same body twice.
+- If you choose or substantively rewrite the content, show it to the user
+  before writing and collect one confirmation, including any duplicate or
+  destination choice. Never silently sanitize, summarize or broaden the scope.
+- Only report success after the tool confirms it. Return the title, actual id
+  and how to find it in STH. Do not invent a link or claim to upload attachments.
