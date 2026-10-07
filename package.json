@@ -1,6 +1,6 @@
 {
   "name": "sth-plugin",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "private": true,
   "description": "Packaging tests and reference generator for the STH agent plugin.",
   "license": "MIT",

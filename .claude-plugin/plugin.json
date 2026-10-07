@@ -1,7 +1,7 @@
 {
   "name": "sth",
   "displayName": "Skills Transfer Hub",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Search, reuse and publish your team's prompts and AI artifacts, and port them between AI coding tools.",
   "author": {
     "name": "Skills Transfer Hub",

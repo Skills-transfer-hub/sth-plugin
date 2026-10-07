@@ -65,9 +65,11 @@ describe('the two skills divide the work without overlapping', () => {
 })
 
 describe('the skills tell the truth about consent and secrets', () => {
-  test('the one skill that can write requires asking first', () => {
+  test('saving respects existing authorization and requires consent for proposed content', () => {
     const { text } = readSkill('sth-library')
-    assert.match(text, /Ask before saving/i)
+    assert.match(text, /Ask before\s+saving/i)
+    assert.match(text, /explicit request to save or\s+share clearly selected content[^.]+authorizes that write/i)
+    assert.match(text, /Never save silently/i)
     assert.match(text, /secret/i)
   })
 
@@ -85,8 +87,13 @@ describe('the skills tell the truth about consent and secrets', () => {
     }
   })
 
-  test('the save command shows the body before writing it', () => {
-    assert.match(read('commands/save.md'), /show it to the user before writing/i)
+  test('save and share use the same library flow and do not require repeated approval', () => {
+    for (const file of ['commands/save.md', 'commands/share.md']) {
+      const command = read(file)
+      assert.match(command, /\.\.\/skills\/sth-library\/SKILL\.md/)
+      assert.match(command, /(?:without another\s+confirmation|do not ask for the same permission again)/i)
+    }
+    assert.match(read('commands/save.md'), /show it to the user\s+before writing/i)
   })
 })
 
