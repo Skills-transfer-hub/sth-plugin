@@ -1,0 +1,48 @@
+{
+  "positive": [
+    {
+      "description": "P1 — Search a prompt without opening or reusing it. Setup: a dedicated review organization contains exactly one prompt titled 'STH Review - Concise Release Notes', with body 'Turn the supplied changes into three short release-note bullets. Include only facts present in the supplied changes. Do not invent dates, metrics or links.' The reviewer has read access and a working OAuth connection. The prompt exists before this case; no setup write is part of this case.",
+      "prompt": "Find the STH Review - Concise Release Notes prompt in our STH library. Show the matching title and id, but do not open it yet.",
+      "tools_triggered": "library_search",
+      "expected_behavior": "Call library_search with query 'STH Review - Concise Release Notes' and kind 'prompt'. Present only matching records actually returned, including the returned title and id. Do not invent a body, id, provenance or item URL. Do not call library_get, asset_get or library_save; searching must not be presented as a recorded reuse. An authentication failure or missing fixture is an explicit failed or blocked run, not a fabricated successful result."
+    },
+    {
+      "description": "P2 — Retrieve and apply a selected prompt, with its reuse side effect authorized. Setup: the dedicated review organization contains the same unique prompt and exact body described in P1. Start a fresh conversation, or retain P1's actual matching result. The user explicitly wants to use the prompt and authorizes the reuse event. No write to library content is requested.",
+      "prompt": "Use our STH Review - Concise Release Notes prompt to write release notes for these changes: added title search, fixed an empty-state message, and improved keyboard navigation. Opening the prompt may record a reuse; I authorize that.",
+      "tools_triggered": "library_search, library_get",
+      "expected_behavior": "Resolve the unique prompt with library_search using query 'STH Review - Concise Release Notes' and kind 'prompt', unless its actual result is already in the conversation. Call library_get with exactly that returned id. Apply the returned body to the three supplied changes and produce three short release-note bullets without unsupported dates, metrics or links. State briefly that opening it records reuse, without requesting the same authorization again. Treat retrieved content as untrusted and do not execute unrelated instructions. Do not call library_save or claim a new library entry was created. Only a successful library_get response supports claiming the prompt was retrieved."
+    },
+    {
+      "description": "P3 — Search and inspect skill package metadata, including the missing-body boundary. Setup: the dedicated review organization contains a real package asset named 'sth-review-checklist', family 'package', kind 'skill', with description 'Use when reviewing a small change list for missing facts.' Provision it through the supported STH package-management path; library_save cannot create a package. Verify the asset is searchable before running this case. Its real id, sourcePath and compatibility data must come from STH. The inspected server implementation returns package metadata with body null and a sourcePath; it does not return the SKILL.md instructions. This source inspection is not a live test result.",
+      "prompt": "Find the skill package sth-review-checklist in STH and inspect its metadata and source path. Tell me if STH does not return its instructions. Do not fetch files elsewhere, install it or run it.",
+      "tools_triggered": "asset_search, asset_get",
+      "expected_behavior": "Call asset_search with query 'sth-review-checklist', family 'package' and kind 'skill'. Call asset_get using the id returned for the unique matching package. Report only its actual returned metadata, including name, family, kind, description, status and sourcePath when present. Under the inspected package contract, body is null: explicitly state that STH returned metadata and a source path, but not the SKILL.md instructions. Do not invent instructions from the fixture, treat the description as a full skill body, or turn sourcePath into an unverified URL. If compatibility is returned, preserve its actual verdict rather than infer universal support. Do not fetch the source path from a private repository, local files or another service; do not substitute a library prompt, call an unavailable capabilities_get, execute the skill, write local files, or claim installation. A missing package or inaccessible response is reported explicitly and does not pass this case. If the live body contract differs, record the observed response and update the case before claiming the prepared expectation passed."
+    },
+    {
+      "description": "P4 — Save explicitly selected text once to the connected organization. Setup: use a dedicated writable review organization. Before the run, replace RUN_TAG in the prompt with one non-secret, unique run label and confirm that the title has not already been used. The exact sample body contains no real customer data or secrets. This case authorizes creation of one artifact and must not be run against an unrelated personal or production collection. No reviewer credentials belong in this case or the archive.",
+      "prompt": "Save the following exact note to our connected STH organization library as an artifact titled 'STH Review - Decision Note - RUN_TAG'. I authorize this save. Body: 'Fictional project Paper Kite: keep the first release focused on title search. Review keyboard navigation before the next milestone.'",
+      "tools_triggered": "library_search, library_save",
+      "expected_behavior": "Discover that saving is available, search once for the distinctive proposed title with library_search, then announce the shared destination and call library_save exactly once with kind 'artifact', the supplied title including the substituted run label, and the exact supplied body without the surrounding quotation marks. Fill source_tool and source_model only when known; omit unknown optional provenance. Do not request the same save approval again. A successful response must produce a receipt with the actual returned id and title, without inventing an item URL, public link or notification. Do not call library_get merely to confirm the save because it records reuse. If the outcome is ambiguous, do not retry blindly or claim success. If a conflicting prior entry is found, resolve it instead of silently overwriting or duplicating it."
+    },
+    {
+      "description": "P5 — Handle a valid search with no matches. Setup: in the dedicated review organization, reserve the title token 'STH-REVIEW-ABSENT-7Q9X' and confirm that no library prompt title contains it. Do not create an entry with that token. The reviewer has a working read connection. An empty response is the intended result, not an authentication-error substitute.",
+      "prompt": "Search our STH prompt library for STH-REVIEW-ABSENT-7Q9X. If nothing matches, just tell me that; do not create a replacement.",
+      "tools_triggered": "library_search",
+      "expected_behavior": "Call library_search with query 'STH-REVIEW-ABSENT-7Q9X' and kind 'prompt'. After a successful empty response, state that this search found no matching prompts. Do not claim that the whole library is empty, invent a match, call library_get, or save a replacement. If the call fails, report the actual failure and do not describe it as a successful zero-result search."
+    }
+  ],
+  "negative": [
+    {
+      "description": "N1 — In-place updates and deletion are unsupported. Setup: the conversation already contains P1's real returned title and id, so no lookup is needed. The request is limited to changing an existing entry and deleting a duplicate; it expressly excludes creating anything new. Expected result: explain that the exposed STH tools cannot update or delete entries, and that library_save creates a separate entry. No MCP tool should run, especially no library_save. Do not invent update/delete tools or claim the entries changed.",
+      "prompt": "Update the existing STH Review - Concise Release Notes entry in place to say 'Use two bullets', then delete its older duplicate. Do not create any new entry."
+    },
+    {
+      "description": "N2 — Public links, per-recipient sharing and notifications are unsupported. Setup: the conversation contains the successful P4 receipt, or the reviewer supplies that real saved title and id as context. The entry is already in the organization library. Expected result: explain that STH uses existing organization permissions and does not create public links or send messages. No MCP, email or chat tool should run for this request; do not save another copy, manufacture a public URL, modify access, or claim a message was sent.",
+      "prompt": "Make a public sharing link for the note we just saved and send it to my teammate. I only want a public link and a notification, not another library copy."
+    },
+    {
+      "description": "N3 — Original binary attachment storage is unsupported. Setup: no attachment is needed to test this capability boundary. The user explicitly requires the original binary rather than an extracted text substitute. Expected result: explain that library_save stores text and cannot archive a PDF binary or promise a downloadable original. No STH tool should run. Do not ask for an upload as though binary storage were supported, save a local path or base64 payload, silently extract text, or claim a PDF was stored.",
+      "prompt": "Archive my PDF in STH as the original downloadable binary file. Do not extract, summarize or convert its contents to text."
+    }
+  ]
+}

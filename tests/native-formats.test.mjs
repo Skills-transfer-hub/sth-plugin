@@ -84,11 +84,9 @@ describe('Codex', () => {
     }
   })
 
-  test('hooks are left to the conventional path', () => {
-    // Codex documents hooks at hooks/hooks.json "or referenced in manifest".
-    // Claude Code proved that re-declaring the standard path double-loads it
-    // and kills the plugin, so the convention is the safer of the two here too.
-    assert.equal(manifest.hooks, undefined)
+  test('OpenAI skips the optional Claude hook in a source install', () => {
+    assert.deepEqual(manifest.hooks, [])
+    assert.deepEqual(json('plugin.json').extensions['com.openai'].hooks, [])
     assert.ok(exists('hooks/hooks.json'))
   })
 
@@ -96,11 +94,14 @@ describe('Codex', () => {
     assert.equal(json('plugin.json').version, manifest.version)
   })
 
-  test('the repo marketplace file is absent on purpose, and said so', () => {
-    // Its location is documented; its schema is not. A guessed schema fails
-    // later and quietly, so the gap is recorded instead of filled.
-    assert.equal(exists('.agents/plugins/marketplace.json'), false)
-    assert.match(read('README.md'), /\.agents\/plugins\/marketplace\.json/)
+  test('the repo marketplace points at the source with explicit install policies', () => {
+    const marketplace = json('.agents/plugins/marketplace.json')
+    assert.equal(marketplace.name, 'skillsth')
+    const plugin = marketplace.plugins.find((entry) => entry.name === PLUGIN_NAME)
+    assert.ok(plugin)
+    assert.deepEqual(plugin.source, { source: 'local', path: './' })
+    assert.deepEqual(plugin.policy, { installation: 'AVAILABLE', authentication: 'ON_INSTALL' })
+    assert.equal(plugin.category, 'Productivity')
   })
 })
 

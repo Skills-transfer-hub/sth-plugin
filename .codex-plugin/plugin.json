@@ -1,11 +1,35 @@
 {
   "name": "sth",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Search, reuse and publish your team's prompts and AI artifacts, and port them between AI coding tools.",
   "author": {
     "name": "Skills Transfer Hub",
     "url": "https://skillsth.com"
   },
   "skills": "./skills",
-  "mcpServers": "./mcp.json"
+  "mcpServers": "./mcp.json",
+  "hooks": [],
+  "interface": {
+    "displayName": "Skills Transfer Hub",
+    "shortDescription": "Your team's AI library",
+    "longDescription": "Search and reuse your team's prompts and AI artifacts, save approved work, review library quality, and check compatibility before transferring skills between AI coding tools. Connect your STH organization with OAuth.",
+    "developerName": "Skills Transfer Hub",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://skillsth.com",
+    "defaultPrompt": [
+      "Find a reusable prompt in our STH library.",
+      "Help me save this work to our STH library.",
+      "Check whether this skill can be transferred to Codex."
+    ],
+    "logo": "./assets/buddy-logo-light.png",
+    "logoDark": "./assets/buddy-logo-dark.png",
+    "composerIcon": "./assets/buddy-logo-light.png",
+    "composerIconDark": "./assets/buddy-logo-dark.png",
+    "brandColor": "#0A0A0A",
+    "brandColorDark": "#FAFAFA"
+  }
 }

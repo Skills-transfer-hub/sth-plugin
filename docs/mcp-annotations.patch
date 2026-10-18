@@ -1,0 +1,74 @@
+--- a/src/app/api/[transport]/route.ts
++++ b/src/app/api/[transport]/route.ts
+@@ -82,6 +82,11 @@
+     if (allows('library_search')) server.registerTool(
+       'library_search',
+       {
++        annotations: {
++          readOnlyHint: false,
++          destructiveHint: false,
++          openWorldHint: false,
++        },
+         description: 'Search the team STH library of reusable prompts and AI artifacts.',
+         inputSchema: {
+           query: z.string().optional(),
+@@ -109,6 +114,11 @@
+     if (allows('library_get')) server.registerTool(
+       'library_get',
+       {
++        annotations: {
++          readOnlyHint: false,
++          destructiveHint: false,
++          openWorldHint: false,
++        },
+         description:
+           'Fetch the full content of one STH library item by id and record it as reused.',
+         inputSchema: { id: z.string() },
+@@ -132,6 +142,11 @@
+     if (allows('library_save')) server.registerTool(
+       'library_save',
+       {
++        annotations: {
++          readOnlyHint: false,
++          destructiveHint: false,
++          openWorldHint: false,
++        },
+         description: 'Save a prompt or an AI output to the team STH library.',
+         inputSchema: {
+           kind: z.enum(LIBRARY_KINDS).default('prompt'),
+@@ -163,6 +178,11 @@
+     if (allows('asset_search')) server.registerTool(
+       'asset_search',
+       {
++        annotations: {
++          readOnlyHint: false,
++          destructiveHint: false,
++          openWorldHint: false,
++        },
+         description:
+           'Search deployable packages and collaborative library assets through one STH read model.',
+         inputSchema: {
+@@ -200,6 +220,11 @@
+     if (allows('asset_get')) server.registerTool(
+       'asset_get',
+       {
++        annotations: {
++          readOnlyHint: false,
++          destructiveHint: false,
++          openWorldHint: false,
++        },
+         description: 'Fetch one package or library asset returned by asset_search.',
+         inputSchema: { id: z.string() },
+         outputSchema: { asset: assetDocumentSchema },
+@@ -241,6 +266,11 @@
+     if (allows('capabilities_get')) server.registerTool(
+       'capabilities_get',
+       {
++        annotations: {
++          readOnlyHint: false,
++          destructiveHint: false,
++          openWorldHint: false,
++        },
+         description:
+           'Report where an STH artifact kind installs in each AI coding tool, and at what fidelity (exact, lossy, native-only or unsupported).',
+         inputSchema: {

@@ -18,10 +18,13 @@ describe('install paths', () => {
     assert.ok(read('README.md').includes(`${PLUGIN_NAME}@${marketplace.name}`))
   })
 
-  test('Codex — codex plugin add from the git source', () => {
+  test('Codex — register the marketplace, then install its plugin selector', () => {
     assert.ok(exists('.codex-plugin/plugin.json') || exists('plugin.json'))
     assert.ok(exists('mcp.json'))
     assert.ok(exists('skills'))
+    assert.ok(exists('.agents/plugins/marketplace.json'))
+    assert.ok(read('README.md').includes('codex plugin marketplace add .'))
+    assert.ok(read('README.md').includes('codex plugin add sth@skillsth'))
   })
 
   test('Cursor — Customize page or git repository', () => {
