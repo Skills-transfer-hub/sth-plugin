@@ -1,0 +1,16 @@
+{
+  "interface": {
+    "developerName": "Skills Transfer Hub",
+    "websiteURL": "https://www.skillsth.com/fr",
+    "supportURL": "https://www.skillsth.com/fr/contact",
+    "longDescription": "Find and reuse prompts, skills and other reusable text in your team's Skills Transfer Hub library. Save work you choose to share with your connected STH organization, review the collection, and check compatibility before transferring an artifact between AI coding tools. Requires an STH account and an organization with the remote MCP connector enabled. Access depends on your organization's permissions and plan. Local conversion and installation require an execution environment with access to the target project and the STH CLI. The plugin does not upload binary files, delete or update library entries, create public share links, or send messages to teammates. Optional paid STH plans are purchased on the STH website."
+  },
+  "review": {
+    "commerce": true,
+    "commerce_description": "STH access does not necessarily require payment. Optional paid STH plans are purchased on the STH website. The plugin has no purchase, checkout, payment or subscription-management tools."
+  },
+  "publication": {
+    "countries": [],
+    "release_notes": "Initial public submission candidate: STH library search and approved saves, artifact compatibility guidance, connection diagnostics, and collection review. Includes Buddy logos for light and dark themes."
+  }
+}

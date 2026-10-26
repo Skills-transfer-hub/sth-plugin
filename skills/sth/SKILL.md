@@ -11,8 +11,11 @@ description: >-
 # STH, in the current conversation
 
 Take care of the user's STH task here. Keep the current conversation context;
-do not delegate to a fresh agent merely because the user wrote `@sth`. Respond
-in the user's language, briefly. Do the work with available tools instead of
+do not delegate to a fresh agent merely because the user wrote literal `@sth`.
+If the user explicitly selected the native `sth:assistant` agent, execute
+inside that agent using the task and selected content passed by its parent.
+Do not assume the agent received the parent's complete conversation history.
+Respond in the user's language, briefly. Do the work with available tools instead of
 listing commands or making the user carry out routine steps.
 
 ## Understand the request before choosing a tool

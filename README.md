@@ -1,13 +1,36 @@
 # STH agent plugin
 
-One package for Claude chat, Cowork and Claude Code, plus Codex, Cursor,
-GitHub Copilot, VS Code, Kiro, Antigravity and Gemini CLI. It wires up the STH
-remote MCP connector and ships the skills that tell an agent when to use it.
+One package for Claude chat, Cowork and Claude Code, plus ChatGPT, Codex, Cursor,
+GitHub Copilot, VS Code, Kiro, Antigravity and Gemini CLI. It wires up
+the STH remote MCP connector and ships the skills that tell an agent when to
+reach for it.
 
-Five skills, five commands, one curating sub-agent, a Claude Code mention hook,
-an opt-in capture reminder, and the MCP connector.
+Five portable skills, five commands, an STH assistant and a curating sub-agent, a Claude mention
+hook, an opt-in capture reminder, and the MCP connector. A dedicated ChatGPT/Codex export packages the
+skills and remote connector with STH icons for light and dark themes.
 
-## Just address STH in Claude Code
+## Select STH from Claude Code's native @ menu
+
+Load this checkout with `claude --plugin-dir .`, type `@sth`, then select the
+**sth:assistant** agent from the suggestions. Continue with your request, such
+as "retrouve notre prompt de revue de code". Claude delegates to that agent;
+it uses the task and selected content passed by the parent conversation.
+
+The explicit typed form, without selecting a suggestion, is:
+
+```text
+@agent-sth:assistant verifie les outils STH disponibles, sans rien sauvegarder
+```
+
+This native agent entry targets Claude Code. It does not add a connector chip
+to Claude Chat. The separate `sth:sth-librarian` agent remains read-only and
+focused on reviewing the library. Installed copies need an update before a
+new session can discover the assistant; `--plugin-dir .` loads this checkout
+for the current test session without publishing it.
+
+Source: [native agent mentions](https://code.claude.com/docs/en/sub-agents#invoke-subagents-explicitly).
+
+## Address STH with a literal mention
 
 Once this version of the plugin is loaded, type your request normally:
 
@@ -42,6 +65,23 @@ same skill and natural-language requests without relying on hooks.
 
 Sources: [prompt hooks](https://code.claude.com/docs/en/hooks#userpromptsubmit),
 [Claude Code OAuth login](https://code.claude.com/docs/en/mcp#authenticate-from-the-command-line).
+
+## ChatGPT / Codex version
+
+```sh
+npm run build:openai
+```
+
+This produces `dist/sth-openai-0.1.4.tar.gz`, ready for private creation through
+Plugin Creator. It includes search/save, transfer, connection diagnostics, and
+library curation as skills. See [the OpenAI guide](docs/openai.md) for account
+creation, OAuth connection, local installation, and verification.
+
+For public review preparation, `npm run build:openai:public` creates a separate
+draft ZIP and a readiness report. The current draft still needs updated legal
+pages and a real hosted demo; it has not been submitted. See the
+[publication audit](docs/openai-publication-audit.md) and
+[review walkthrough](docs/openai-review.md).
 
 ## Save and share from Claude
 
@@ -94,9 +134,10 @@ member without those gets an empty toolbox rather than tools that fail on use.
 
 | Client | Command |
 | --- | --- |
-| Claude chat / Cowork | **Customize > Plugins > Add > Add marketplace**, add `Skills-transfer-hub/sth-plugin`, then add STH |
+| Claude chat / Cowork | **Customize > Plugins > Add > Add marketplace**, add `Skills-transfer-hub/sth-plugin`, then add STH; in Cowork, open the Cowork tab first |
 | Claude Code | `/plugin marketplace add Skills-transfer-hub/sth-plugin` then `/plugin install sth@skillsth` |
-| Codex | `codex plugin add` from this repository |
+| ChatGPT | Create a private plugin from `npm run build:openai` using Plugin Creator, then install and connect STH |
+| Codex (local source) | `codex plugin marketplace add .` then `codex plugin add sth@skillsth` from this repository |
 | Cursor | install from the Customize page, or from this git URL |
 | Gemini CLI | `gemini extensions install https://github.com/Skills-transfer-hub/sth-plugin` |
 | Antigravity | copy this directory into `.agents/plugins/` or `~/.gemini/config/plugins/` |
@@ -104,7 +145,7 @@ member without those gets an empty toolbox rather than tools that fail on use.
 
 ## Update an existing Claude Code installation
 
-Version **0.1.3** adds the contextual `@sth` workflow and connection recovery.
+Version **0.1.4** adds the native `sth:assistant` agent and the ChatGPT/Codex export; 0.1.3 added the contextual `@sth` workflow and connection recovery.
 For a GitHub marketplace installation, refresh the catalog and update STH:
 
 ```sh
@@ -133,6 +174,7 @@ all of them:
 | `.claude-plugin/` | Claude Code (manifest + marketplace) |
 | `.cursor-plugin/plugin.json` | Cursor's richer native format |
 | `.codex-plugin/plugin.json` | Codex's native format |
+| `.agents/plugins/marketplace.json` | ChatGPT desktop / Codex local marketplace |
 | `skills/` | **all of them** |
 
 An Agent Plugins manifest is also a valid Antigravity manifest — Antigravity
@@ -150,6 +192,7 @@ location, and conformant clients must ignore files they do not recognise.
 ```sh
 npm test              # package checks, no dependencies
 npm run check:reference
+npm run build:openai   # requires tar; available on macOS and Linux
 ```
 
 The suite checks package structure and declared client contracts. It does not
@@ -167,6 +210,7 @@ prove OAuth, live STH access, or the full flow in each host. One file per contra
 | `tests/reference.test.mjs` | the compatibility file matches the generator; the matrix is internally coherent |
 | `tests/install.test.mjs` | one case per install command in the table above |
 | `tests/identity.test.mjs` | the declared repository is the one this clone actually came from |
+| `tests/openai.test.mjs` | OpenAI metadata, theme assets, portable export contents, and safe packaging |
 
 `skills/sth-transfer/reference/compatibility.md` is **generated** by
 `scripts/build-reference.mjs` from `data/sth-capabilities-v1.json`. Do not edit
@@ -174,11 +218,10 @@ it by hand — the test fails when it drifts.
 
 ## Known gaps
 
-**The Codex repo marketplace (`.agents/plugins/marketplace.json`) is omitted.**
-Its location is documented, its schema is not, and a GitHub code search for the
-path returns no public example to copy. A guessed schema fails later and
-quietly, so the gap stays recorded rather than filled. Every other Codex install
-path works without it.
+**Client verification is separate from packaging.** The repository now includes
+the documented Codex marketplace at `.agents/plugins/marketplace.json`.
+A successful export or private plugin creation does not prove OAuth login or
+runtime behavior in ChatGPT and Codex. Use the [connection checks](docs/openai.md).
 
 **The endpoint is not configurable through the plugin.** Its MCP configuration
 and connection guide use production. Library actions use tool names, so a
