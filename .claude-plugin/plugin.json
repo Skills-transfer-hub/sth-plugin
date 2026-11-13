@@ -8,6 +8,7 @@
     "url": "https://skillsth.com"
   },
   "homepage": "https://skillsth.com/docs",
+  "privacyPolicyUrl": "https://skillsth.com/legal/privacy",
   "repository": "https://github.com/Skills-transfer-hub/sth-plugin",
   "license": "MIT",
   "keywords": [
