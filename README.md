@@ -5,9 +5,24 @@ GitHub Copilot, VS Code, Kiro, Antigravity and Gemini CLI. It wires up
 the STH remote MCP connector and ships the skills that tell an agent when to
 reach for it.
 
-Five portable skills, five commands, an STH assistant and a curating sub-agent, a Claude mention
+Five portable skills, six commands, an STH assistant and a curating sub-agent, a Claude mention
 hook, an opt-in capture reminder, and the MCP connector. A dedicated ChatGPT/Codex export packages the
 skills and remote connector with STH icons for light and dark themes.
+
+## Quick start
+
+In Claude Code:
+
+```sh
+claude plugin marketplace add Skills-transfer-hub/sth-plugin
+claude plugin install sth@skillsth
+```
+
+Restart Claude Code, then type `@sth retrouve notre prompt de revue de code`.
+The first request walks you through the browser sign-in. The remote tools also
+need an STH organization with MCP access (see [What it connects to](#what-it-connects-to)).
+Buddy, the usage panel, comes from the same marketplace:
+`claude plugin install sth-usage@skillsth`.
 
 ## Select STH from Claude Code's native @ menu
 
@@ -97,7 +112,8 @@ Claude prepares a reusable text entry, checks for duplicates, and saves the
 content you authorized. If the content or intended audience is unclear, it
 asks one focused question. On success it reports the saved title and the
 identifier returned by STH. You can also select a plugin skill with `/` or `+`.
-The commands are `find`, `save`, `share`, `transfer` and `doctor`; `share`
+The commands are `find`, `save`, `share`, `install`, `transfer` and `doctor`;
+`install` puts a team package into the project through the `sth` CLI. `share`
 uses the same organization library flow and reuses an existing save receipt
 when the same item was already saved in this conversation.
 Skills and commands work in all three Claude hosts; hooks and sub-agents run
@@ -108,8 +124,10 @@ See [Claude's plugin guide](https://support.claude.com/en/articles/13837440-use-
 members with access can find it. It does not send a message, invite a person,
 create a public link, or share the Claude conversation. `library_save` accepts
 text (`prompt` or `artifact`); it cannot upload a PDF, image or other binary
-file. The connector currently has no update or sharing tool, and returns an
-item ID rather than a share URL.
+file. Newer STH servers also expose `library_update` and `library_archive`, so
+a correction changes the existing entry instead of saving a duplicate; with an
+older server, Claude says so and offers a new entry. There is no sharing tool,
+and a save returns an item ID rather than a share URL.
 
 For chat and Cowork, open **Customize > Connectors > STH > Connect**, complete
 sign-in, then enable STH in the conversation's **+ > Connectors** menu. If STH
@@ -136,6 +154,7 @@ member without those gets an empty toolbox rather than tools that fail on use.
 | --- | --- |
 | Claude chat / Cowork | **Customize > Plugins > Add > Add marketplace**, add `Skills-transfer-hub/sth-plugin`, then add STH; in Cowork, open the Cowork tab first |
 | Claude Code | `/plugin marketplace add Skills-transfer-hub/sth-plugin` then `/plugin install sth@skillsth` |
+| Buddy (Claude Code usage panel) | same marketplace, then `/plugin install sth-usage@skillsth` (Claude Code 2.1.287 or later) |
 | ChatGPT | Create a private plugin from `npm run build:openai` using Plugin Creator, then install and connect STH |
 | Codex (local source) | `codex plugin marketplace add .` then `codex plugin add sth@skillsth` from this repository |
 | Cursor | install from the Customize page, or from this git URL |
@@ -215,6 +234,24 @@ prove OAuth, live STH access, or the full flow in each host. One file per contra
 `skills/sth-transfer/reference/compatibility.md` is **generated** by
 `scripts/build-reference.mjs` from `data/sth-capabilities-v1.json`. Do not edit
 it by hand — the test fails when it drifts.
+
+### Behavior evals
+
+`npm test` checks the package; `evals/` checks what Claude does with it. Each
+case runs Claude with and without the plugin against mocked STH tools
+(`evals/mocks/sth/`, overridden per case), so no account or network access is
+needed:
+
+```sh
+claude plugin eval . --judge-model sonnet --no-publish
+```
+
+The cases cover one save with a real receipt, a connection check that writes
+nothing, reusing the team's prompt before writing a new one, ignoring
+instructions planted in a library item, a bare `@sth`, installing a package
+without faking it, renaming instead of duplicating, and refusing an unsupported
+conversion. A full run makes 8 cases × 3 runs × 2 arms of real model calls;
+`--runs 1` is a cheaper smoke test.
 
 ## Known gaps
 

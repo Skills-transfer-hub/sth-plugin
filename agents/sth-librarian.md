@@ -29,6 +29,6 @@ What you are looking for:
 Report findings as a list, most valuable first, each with the item id and a
 concrete proposed change.
 
-**Never write.** Do not call `library_save`. You produce a proposal that the
-user acts on; deleting or overwriting a colleague's entry is their decision, not
-yours.
+**Never write.** Do not call `library_save`, `library_update` or
+`library_archive`. You produce a proposal that the user acts on; archiving or
+overwriting a colleague's entry is their decision, not yours.

@@ -1,0 +1,13 @@
+STH CLI dev
+- [antigravity/skill] exact — .agents/skills/{name}/SKILL.md · invoke /{name}
+- [claude/skill] exact — .claude/skills/{name}/SKILL.md · invoke /{name}
+- [codex/skill] exact — .agents/skills/{name}/SKILL.md · invoke ${name}
+- [copilot/skill] exact — .agents/skills/{name}/SKILL.md · invoke /{name}
+- [cursor/skill] exact — .agents/skills/{name}/SKILL.md · invoke /{name}
+- [gemini/skill] exact — .agents/skills/{name}/SKILL.md · invoke /skills reload
+- [antigravity/workflow] native-only — .agents/workflows/{name}.md · invoke /{name}
+- [claude/workflow] native-only — .claude/workflows/{name}.js · invoke /{name}
+- [codex/workflow] unsupported — Codex has no project workflow file contract
+- [copilot/workflow] unsupported — Copilot workflows are outside the V1 artifact contract
+- [cursor/workflow] unsupported — Cursor workflows are outside the V1 artifact contract
+- [gemini/workflow] unsupported — Gemini CLI has no project workflow file contract

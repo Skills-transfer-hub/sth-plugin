@@ -1,12 +1,21 @@
 {
   "name": "skillsth",
   "owner": { "name": "Skills Transfer Hub", "url": "https://skillsth.com" },
-  "description": "The STH agent plugin.",
+  "description": "The STH agent plugin, and Buddy for Claude Code.",
   "plugins": [
     {
       "name": "sth",
       "source": "./",
       "description": "Search, reuse and publish your team's prompts and AI artifacts, and port them between AI coding tools."
+    },
+    {
+      "name": "sth-usage",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/Skills-transfer-hub/sth-claude.git",
+        "path": "mods/sth-usage"
+      },
+      "description": "Buddy: Claude usage, session summaries, project diagnostics and STH catalogs."
     }
   ]
 }

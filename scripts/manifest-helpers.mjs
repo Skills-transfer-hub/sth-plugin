@@ -12,11 +12,16 @@ export const ENDPOINT = 'https://mcp.skillsth.com/api/mcp'
 export const PLUGIN_NAME = 'sth'
 export const VERSION = json('package.json').version
 
-/** The six tools the connector exposes, and the two skills that describe them. */
+/**
+ * Every tool the connector can expose. Newer servers add library_update and
+ * library_archive; older ones stop at the other six, so skills must handle both.
+ */
 export const MCP_TOOLS = [
   'library_search',
   'library_get',
   'library_save',
+  'library_update',
+  'library_archive',
   'asset_search',
   'asset_get',
   'capabilities_get',
