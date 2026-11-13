@@ -87,7 +87,7 @@ Sources: [prompt hooks](https://code.claude.com/docs/en/hooks#userpromptsubmit),
 npm run build:openai
 ```
 
-This produces `dist/sth-openai-0.1.4.tar.gz`, ready for private creation through
+This produces `dist/sth-openai-0.1.5.tar.gz`, ready for private creation through
 Plugin Creator. It includes search/save, transfer, connection diagnostics, and
 library curation as skills. See [the OpenAI guide](docs/openai.md) for account
 creation, OAuth connection, local installation, and verification.
@@ -164,7 +164,7 @@ member without those gets an empty toolbox rather than tools that fail on use.
 
 ## Update an existing Claude Code installation
 
-Version **0.1.4** adds the native `sth:assistant` agent and the ChatGPT/Codex export; 0.1.3 added the contextual `@sth` workflow and connection recovery.
+Version **0.1.5** adds `/sth:install`, in-place corrections when the server exposes `library_update` and `library_archive`, behavior evals, and Buddy in the same marketplace; 0.1.4 added the native `sth:assistant` agent and the ChatGPT/Codex export; 0.1.3 added the contextual `@sth` workflow and connection recovery.
 For a GitHub marketplace installation, refresh the catalog and update STH:
 
 ```sh

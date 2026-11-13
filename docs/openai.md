@@ -16,7 +16,7 @@ and needs access to an organization with the remote MCP connector enabled.
 ## Create a private account plugin
 
 From the source repository, run `npm test`, `npm run check:reference`, and
-`npm run build:openai`. The output is `dist/sth-openai-0.1.4.tar.gz`, containing
+`npm run build:openai`. The output is `dist/sth-openai-0.1.5.tar.gz`, containing
 one `sth/` directory with the manifest, skills and references, MCP configuration,
 Codex compatibility manifest, icons, and license.
 
