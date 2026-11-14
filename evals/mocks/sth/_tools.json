@@ -1,0 +1,200 @@
+{
+  "tools": [
+    {
+      "name": "library_search",
+      "description": "Search the team STH library of reusable prompts and AI artifacts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "prompt",
+              "artifact"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "library_get",
+      "description": "Fetch the full content of one STH library item by id and record it as reused.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "library_save",
+      "description": "Save a prompt or an AI output to the team STH library.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "prompt",
+              "artifact"
+            ],
+            "default": "prompt"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_tool": {
+            "type": "string"
+          },
+          "source_model": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "library_update",
+      "description": "Correct one STH library item in place instead of saving a near-duplicate. Pass only the fields to change, and pass the updatedAt from library_get (or the updated_at of your previous update) as expected_updated_at so the edit is refused if someone changed the item since.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "prompt",
+              "artifact"
+            ]
+          },
+          "expected_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "library_archive",
+      "description": "Archive one STH library item, hiding it from every search and read. Only when the user explicitly asks to retire it. Archiving an archived item changes nothing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "asset_search",
+      "description": "Search deployable packages and collaborative library assets through one STH read model.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "family": {
+            "type": "string",
+            "enum": [
+              "package",
+              "library"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "agent",
+              "command",
+              "instruction",
+              "rule",
+              "skill",
+              "workflow",
+              "prompt",
+              "artifact"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "asset_get",
+      "description": "Fetch one package or library asset returned by asset_search.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "capabilities_get",
+      "description": "Report where an STH artifact kind installs in each AI coding tool, and at what fidelity (exact, lossy, native-only or unsupported).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "antigravity",
+              "claude",
+              "codex",
+              "copilot",
+              "cursor",
+              "gemini"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "agent",
+              "command",
+              "instruction",
+              "rule",
+              "skill",
+              "workflow"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

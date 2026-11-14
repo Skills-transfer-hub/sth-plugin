@@ -1,8 +1,11 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { readdirSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { PLUGIN_NAME, ROOT, exists, frontmatter, json, read } from '../scripts/manifest-helpers.mjs'
+import {
+  CLAUDE_DIRECTORY_FILES, ENDPOINT, PLUGIN_NAME, ROOT, exists, frontmatter, json, read,
+} from '../scripts/manifest-helpers.mjs'
 
 /** Anthropic sat out Agent Plugins 1.0, so Claude Code needs its own manifest. */
 describe('Claude Code — plugin manifest', () => {
@@ -27,28 +30,6 @@ describe('Claude Code — plugin manifest', () => {
         assert.ok(exists(path.replace(/^\.\//, '')), `${key} points at missing ${path}`)
       }
     }
-  })
-
-  test('it does not re-declare a path that is already loaded by convention', () => {
-    // Found by installing, not by reading: pointing `hooks` at the standard
-    // hooks/hooks.json makes Claude Code load it twice and refuse the whole
-    // plugin —
-    //   "Duplicate hooks file detected ... The standard hooks/hooks.json is
-    //    loaded automatically, so manifest.hooks should only reference
-    //    additional hook files."
-    // A dangling-pointer check cannot catch this: the path exists, which is
-    // exactly the problem. `mcpServers` -> ./.mcp.json is fine; that one was
-    // verified to install and enable.
-    const conventional = { hooks: './hooks/hooks.json' }
-    for (const [field, path] of Object.entries(conventional)) {
-      assert.notEqual(manifest[field], path, `${field} must not point at the auto-loaded ${path}`)
-      assert.notEqual(manifest[field], path.replace('./', ''), field)
-    }
-  })
-
-  test('the hook file still exists at the conventional path', () => {
-    // Removing the pointer only works because the convention picks it up.
-    assert.ok(exists('hooks/hooks.json'))
   })
 
   test('userConfig keys are shaped for the CLAUDE_PLUGIN_OPTION_ contract', () => {
@@ -76,43 +57,42 @@ describe('Claude Code — marketplace', () => {
   })
 })
 
-describe('Claude Code — hooks', () => {
-  const hooks = json('hooks/hooks.json')
+describe('Claude plugin directory', () => {
+  // Exactly what scripts/build-claude.mjs puts on the branch the directory
+  // tracks, checked against the rules it applies to unverified organizations.
+  const files = execFileSync('git', ['ls-files', '-z', '--', ...CLAUDE_DIRECTORY_FILES], { cwd: ROOT, encoding: 'utf8' })
+    .split('\0').filter(Boolean)
 
-  test('every hook command resolves through CLAUDE_PLUGIN_ROOT', () => {
-    // A bare relative path resolves against the user's cwd, not the plugin.
-    for (const entries of Object.values(hooks.hooks)) {
-      for (const group of entries) {
-        for (const hook of group.hooks) {
-          assert.equal(hook.type, 'command')
-          assert.match(hook.command, /\$\{CLAUDE_PLUGIN_ROOT\}/)
-          const script = hook.command.replace(/["']/g, '').replace('${CLAUDE_PLUGIN_ROOT}/', '')
-          assert.ok(exists(script), `hook script missing: ${script}`)
-        }
+  test('every listed path is tracked', () => {
+    for (const path of CLAUDE_DIRECTORY_FILES) {
+      assert.ok(files.some((file) => file === path || file.startsWith(`${path}/`)), `${path} is not tracked`)
+    }
+  })
+
+  test('it ships only Markdown, JSON, PNG and the license, as UTF-8 without a shebang', () => {
+    for (const file of files) {
+      assert.match(file, /^[\w./-]+$/, `${file}: rename it`)
+      assert.ok(/\.(md|json|png)$/.test(file) || file === 'LICENSE', `${file}: a file type the directory refuses`)
+      if (file.endsWith('.png')) continue
+      const text = new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(join(ROOT, file)))
+      assert.ok(!text.startsWith('#!') && !text.includes('\0'), file)
+    }
+  })
+
+  test('front matter is plain key: value lines, in keys the directory accepts', () => {
+    // It refused `skills:` on an agent without naming the key; keys that give a
+    // component more than text (skills, hooks, mcpServers, permissionMode) go too.
+    const allowed = { skills: ['name', 'description'], commands: ['name', 'description'], agents: ['name', 'description', 'model'] }
+    for (const file of files.filter((path) => path.endsWith('.md'))) {
+      for (const key of Object.keys(frontmatter(read(file)) ?? {})) {
+        assert.ok(allowed[file.split('/')[0]]?.includes(key), `${file}: the directory may refuse "${key}"`)
       }
     }
   })
 
-  test('the nudge rides an event that actually reaches the model', () => {
-    // Plain stdout is added as context only for UserPromptSubmit,
-    // UserPromptExpansion, SessionStart and PostModelSwitch. On Stop it goes to
-    // the debug log, and the only way to reach the model there is
-    // `decision: "block"` — refusing to let the session end, which is far too
-    // heavy for an unsolicited suggestion. A hook on Stop is a silent no-op.
-    assert.ok(hooks.hooks.SessionStart, 'the nudge must run where stdout is injected')
-    assert.equal(hooks.hooks.Stop, undefined, 'Stop discards plain stdout')
-  })
-
-  test('the capture hook stays silent unless the user opted in', () => {
-    // Hooks are trusted at install time; a chatty default gets the whole
-    // plugin disabled, taking the skills with it.
-    const script = read('scripts/session-context.sh')
-    assert.match(script, /CLAUDE_PLUGIN_OPTION_CAPTURE_ON_STOP/)
-    assert.match(script, /\|\|\s*exit 0/)
-    assert.ok(
-      json('.claude-plugin/plugin.json').userConfig?.capture_on_stop,
-      'the hook reads an option the manifest never declares',
-    )
+  test('no hooks, and one remote MCP server in fields the directory accepts', () => {
+    assert.equal(json('.claude-plugin/plugin.json').hooks, undefined)
+    assert.deepEqual(json('.mcp.json'), { mcpServers: { [PLUGIN_NAME]: { type: 'http', url: ENDPOINT } } })
   })
 })
 

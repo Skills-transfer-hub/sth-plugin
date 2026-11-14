@@ -97,6 +97,29 @@ describe('the skills tell the truth about consent and secrets', () => {
   })
 })
 
+describe('installs and corrections go through real tools', () => {
+  test('the install command previews through the CLI and verifies the result', () => {
+    const command = read('commands/install.md')
+    assert.match(command, /\.\.\/skills\/sth-transfer\/SKILL\.md/)
+    assert.match(command, /--dry-run/)
+    assert.match(command, /sth status --json/)
+    assert.match(command, /Never claim an install the CLI did not\s+confirm/)
+  })
+
+  test('a package is never rebuilt from its description, and the STH key stays with the user', () => {
+    const { text } = readSkill('sth-transfer')
+    assert.match(text, /never the\s+package files/)
+    assert.match(text, /never ask for the key or\s+type it/)
+  })
+
+  test('corrections update in place, and archiving needs an explicit request', () => {
+    const { text } = readSkill('sth-library')
+    assert.match(text, /Never overwrite an entry with `library_save`/)
+    assert.match(text, /`expected_updated_at`/)
+    assert.match(text, /Archive only on the user's explicit request/)
+  })
+})
+
 describe('the transfer skill ships its reference', () => {
   test('the compatibility file exists where the skill points', () => {
     assert.ok(exists('skills/sth-transfer/reference/compatibility.md'))

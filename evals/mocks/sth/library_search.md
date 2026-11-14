@@ -1,0 +1,2 @@
+- [prompt] Revue de code — checklist équipe (id 3b1d7c9e-2f4a-4e8b-9c6d-5a7e8f9b0c1d) — claude-code · claude-opus-5-5
+- [artifact] Plan de lancement Q3 (id 9e8d7c6b-5a4f-4e3d-8c2b-1a0f9e8d7c6b) — chatgpt

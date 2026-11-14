@@ -35,7 +35,7 @@ describe('one identity across five manifest families', () => {
   })
 })
 
-describe('the three MCP files are one configuration under three names', () => {
+describe('the Agent Plugins MCP files are one configuration under two names', () => {
   const reference = json('mcp.json')
 
   for (const path of MCP_MANIFESTS) {

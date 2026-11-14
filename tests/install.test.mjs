@@ -18,6 +18,18 @@ describe('install paths', () => {
     assert.ok(read('README.md').includes(`${PLUGIN_NAME}@${marketplace.name}`))
   })
 
+  test('Buddy — the same marketplace lists sth-usage from its own repository', () => {
+    // One marketplace for every STH plugin: Buddy stays in sth-claude and is
+    // fetched from there, so users never add a second catalog.
+    const marketplace = json('.claude-plugin/marketplace.json')
+    const entry = marketplace.plugins.find((plugin) => plugin.name === 'sth-usage')
+    assert.ok(entry, 'the marketplace does not list Buddy')
+    assert.equal(entry.source.source, 'git-subdir')
+    assert.equal(entry.source.url, 'https://github.com/Skills-transfer-hub/sth-claude.git')
+    assert.equal(entry.source.path, 'mods/sth-usage')
+    assert.ok(read('README.md').includes(`sth-usage@${marketplace.name}`))
+  })
+
   test('Codex — register the marketplace, then install its plugin selector', () => {
     assert.ok(exists('.codex-plugin/plugin.json') || exists('plugin.json'))
     assert.ok(exists('mcp.json'))

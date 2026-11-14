@@ -1,11 +1,6 @@
 ---
 name: sth-transfer
-description: >-
-  Use when moving or converting an agent, command, instruction, rule, skill or
-  workflow between AI coding tools — "port this skill to Codex", "does this rule
-  work in Cursor", "make this a Copilot instruction", "where does this install",
-  "will this survive the conversion". Reads the STH compatibility matrix first,
-  so lossy and unsupported conversions are named instead of silently botched.
+description: Use when moving or converting an agent, command, instruction, rule, skill or workflow between AI coding tools, or installing a team package from STH into this project — "port this skill to Codex", "does this rule work in Cursor", "make this a Copilot instruction", "installe notre skill de revue ici", "where does this install", "will this survive the conversion". Reads the STH compatibility matrix first, so lossy and unsupported conversions are named instead of silently botched.
 ---
 
 # Porting artifacts between AI coding tools
@@ -65,6 +60,38 @@ claiming the behavior works in another environment.
 
 **`workflow` is `native-only` or `unsupported` everywhere.** Workflows do not
 port. Say it early rather than after an attempt.
+
+## Install a team package into this project
+
+STH finds packages; the `sth` CLI delivers them. For a package, `asset_get`
+returns its compatibility and `source: <folder>/<slug>/SKILL.md`, never the
+package files, so do not rebuild a package from its name or description.
+
+1. **Identify it.** Call `asset_search(query, family: "package")`, then
+   `asset_get(id)` on the chosen match. A package id reads
+   `kind::folder::slug`; the CLI reference is normally `folder/slug`.
+2. **Read its cell for this host** (`claude`, `codex`, `cursor`…) as above:
+   `exact` installs; `lossy` needs the loss named and accepted first;
+   `native-only` and `unsupported` stop here.
+3. **Check the CLI and its source.** Run `sth version`, then
+   `sth provider list`. Team packages need the `sth-cloud` source that
+   `sth login` writes. If it is missing, the user runs `sth login` and pastes
+   the key from the STH dashboard's licences page; never ask for the key or
+   type it.
+4. **Preview, then install.** `sth install <folder/slug> --target <host>
+   --dry-run` lists the files it would write. Then run it without `--dry-run`.
+   Add `--allow exact,lossy` only after the user accepted the loss, add
+   `--provider <id>` when several sources are configured, and never pass
+   `--force` over local changes without asking.
+5. **Verify.** `sth status --json` must list the resource as current and the
+   destination files must exist. Report the paths, and that `sth update`
+   refreshes them later.
+
+Without the CLI or local workspace access, give the commands from steps 3 and 4
+and stop: nothing is installed. A library item (`family: "library"`) is text,
+not a package, and the CLI does not install it. If the user wants one in the
+project as a skill, command or rule, write it at the matrix destination for
+that kind and say that `sth update` will not track the copy.
 
 ## Check the execution environment
 

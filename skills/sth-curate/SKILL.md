@@ -1,11 +1,6 @@
 ---
 name: sth-curate
-description: >-
-  Use when the user asks to audit, tidy or review the team STH collection for
-  duplicate entries, unclear titles or missing provenance — "clean up our
-  library", "find duplicate prompts", "audit the library". Produces a curation
-  proposal. Use sth-library to find, reuse or save one item, and sth-doctor for
-  connection or permission failures.
+description: Use when the user asks to audit, tidy or review the team STH collection for duplicate entries, unclear titles or missing provenance — "clean up our library", "find duplicate prompts", "audit the library". Produces a curation proposal. Use sth-library to find, reuse or save one item, and sth-doctor for connection or permission failures.
 ---
 
 # Review the team STH library
@@ -40,10 +35,20 @@ confidence or missing information, and a specific suggested change. For a
 duplicate candidate, explain which entry appears preferable and why. For a
 vague title, propose a replacement. Never invent a source model or provenance.
 
-**Never write during a curation review.** Do not call `library_save`. The known
-tool set has no update, merge or delete operation, so do not claim to perform
-those changes. If the user subsequently asks to create an approved consolidated
-entry, use `sth-library` and state that the original entries remain unchanged.
+**Never write during a curation review.** Do not call `library_save`,
+`library_update` or `library_archive` while reviewing. The review ends with a
+proposal.
+
+## Apply an approved change
+
+When the user approves a specific proposal, apply exactly that change through
+the `sth-library` correction flow, if the connector exposes `library_update`
+and `library_archive`: rename or fix one entry with `library_update`; merge two
+entries by updating the one to keep, then archiving the other. Archiving hides
+an entry; nothing here deletes one. Without those tools there is no update,
+merge or delete operation, so do not claim to perform those changes. If the
+user then asks for an approved consolidated entry, use `sth-library` and state
+that the original entries remain unchanged.
 
 If needed tools are missing or a read fails, use `sth-doctor` and report the
 review as incomplete. Do not fabricate findings to fill missing data.

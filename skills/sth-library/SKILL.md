@@ -1,12 +1,6 @@
 ---
 name: sth-library
-description: >-
-  Use when the user wants to find, reuse, save or share work in STH: "save this",
-  "sauvegarde ça dans STH", "partage ce travail avec mon équipe", "find our
-  review prompt", or "what's in the library". Covers prompts, skills, notes,
-  reports and other reusable text through library_search, library_get,
-  library_save, asset_search and asset_get. Also use when proposing to keep a
-  useful result from this session for the team.
+description: Use when the user wants to find, reuse, save, share, correct or retire work in STH, or asks for a prompt, skill or rule the team may already have — "save this", "sauvegarde ça dans STH", "partage ce travail avec mon équipe", "find our review prompt", "écris-moi un prompt de revue", "renomme ce prompt dans STH". Covers prompts, skills, notes, reports and other reusable text through library_search, library_get, library_save, library_update, library_archive, asset_search and asset_get. Also use when proposing to keep a useful result from this session for the team.
 ---
 
 # The team STH library
@@ -46,8 +40,9 @@ deployable packages: `family: "package"` covers the artifact kinds `agent`,
 `command`, `instruction`, `rule`, `skill` and `workflow`, while
 `family: "library"` covers the same rows as `library_search`. Reach for it when
 the user wants something *installable* rather than text to adapt.
-`asset_get(id)` returns the body and, for packages, the per-tool compatibility
-verdict — see the `sth-transfer` skill before acting on that.
+`asset_get(id)` returns a library item's body. For a package it returns the
+per-tool compatibility verdict and source path, not the package files: to put a
+package into a project, follow the install section of the `sth-transfer` skill.
 
 ## Save or share the selected work
 
@@ -85,10 +80,11 @@ approve a body that you cannot save.
    likely duplicate needs a choice, include it in the single clarification or
    preview instead of starting a series of approvals. If this exact content
    was already saved successfully in the conversation, reuse its returned id.
-   The connector has no update tool: do not offer to overwrite an entry with
-   `library_save`. For a requested replacement, explain that limitation and
-   ask whether the user wants a new entry instead. A request to update an
-   existing item does not authorize creating a duplicate.
+   Never overwrite an entry with `library_save`. A requested correction or
+   replacement goes through `library_update` (see below). If the connector
+   does not expose it, explain that limitation and ask whether the user wants
+   a new entry instead. A request to update an existing item does not
+   authorize creating a duplicate.
 5. **Write once and report the result.** Call `library_save` only after the
    above checks. Only a successful response confirms a save. If the write
    times out or its outcome is unknown, do not retry blindly and create a
@@ -125,8 +121,35 @@ verified. The current save response returns an id; do not manufacture a URL,
 public share link or notification. Do not fetch the item merely to confirm the
 write: `library_get` records reuse.
 
+## Correct or retire an entry
+
+Newer STH servers expose `library_update` and `library_archive`; older ones do
+not. Check the tools actually available before promising either.
+
+- `library_update(id, title?, body?, kind?, expected_updated_at?)` changes an
+  existing entry in place. Send only the fields that change. Find the entry
+  with `library_search`; a title-only change needs nothing more. A body change
+  needs the current body, so read it once with `library_get` and pass the
+  `updatedAt` it returns (or the `updated_at` of your previous update) as
+  `expected_updated_at`: a colleague's concurrent edit is then refused
+  instead of overwritten.
+- `library_archive(id)` hides an entry from every search and read for the
+  whole team. It is not deleted, but the dashboard has no restore yet.
+
+An explicit request to rename, fix or retire one identified entry authorizes
+that change; do not ask again. For a substantive rewrite of the body, or an
+entry you picked yourself, show the new text or the entry to archive and get
+one confirmation first. Archive only on the user's explicit request, never to
+tidy duplicates on your own initiative.
+
+Members can change only the entries they created; organization owners and
+admins can change any entry. Report a permission error as such and do not fall
+back to `library_save`. A version conflict means someone
+else changed the entry: read it again, show what changed and ask before
+writing. After success, report the title, id and what changed.
+
 The current tool stores **text**, not binary attachments, a complete project,
-or a Claude conversation link. If asked to archive a PDF, spreadsheet, image or
+or a Claude conversation link. If asked to store a PDF, spreadsheet, image or
 folder, explain the limit and offer a text version; do not silently substitute
 it for the original. It cannot set per-person access, choose a collection,
 switch organizations, or publish a public link. Keep existing permissions.
