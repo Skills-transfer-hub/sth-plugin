@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "sth": {
+      "type": "http",
+      "url": "https://mcp.skillsth.com/api/mcp"
+    }
+  }
+}

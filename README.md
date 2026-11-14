@@ -1,0 +1,292 @@
+# STH agent plugin
+
+One package for Claude chat, Cowork and Claude Code, plus ChatGPT, Codex, Cursor,
+GitHub Copilot, VS Code, Kiro, Antigravity and Gemini CLI. It wires up
+the STH remote MCP connector and ships the skills that tell an agent when to
+reach for it.
+
+Five portable skills, six commands, an STH assistant and a curating sub-agent,
+and the MCP connector. A dedicated ChatGPT/Codex export packages the
+skills and remote connector with STH icons for light and dark themes.
+
+## Quick start
+
+In Claude Code:
+
+```sh
+claude plugin marketplace add Skills-transfer-hub/sth-plugin
+claude plugin install sth@skillsth
+```
+
+Restart Claude Code, then type `@sth retrouve notre prompt de revue de code`.
+The first request walks you through the browser sign-in. The remote tools also
+need an STH organization with MCP access (see [What it connects to](#what-it-connects-to)).
+Buddy, the usage panel, comes from the same marketplace:
+`claude plugin install sth-usage@skillsth`.
+
+## Select STH from Claude Code's native @ menu
+
+Load this checkout with `claude --plugin-dir .`, type `@sth`, then select the
+**sth:assistant** agent from the suggestions. Continue with your request, such
+as "retrouve notre prompt de revue de code". Claude delegates to that agent;
+it uses the task and selected content passed by the parent conversation.
+
+The explicit typed form, without selecting a suggestion, is:
+
+```text
+@agent-sth:assistant verifie les outils STH disponibles, sans rien sauvegarder
+```
+
+This native agent entry targets Claude Code. It does not add a connector chip
+to Claude Chat. The separate `sth:sth-librarian` agent remains read-only and
+focused on reviewing the library. Installed copies need an update before a
+new session can discover the assistant; `--plugin-dir .` loads this checkout
+for the current test session without publishing it.
+
+Source: [native agent mentions](https://code.claude.com/docs/en/sub-agents#invoke-subagents-explicitly).
+
+## Address STH with a literal mention
+
+Once this version of the plugin is loaded, type your request normally:
+
+```text
+@sth sauvegarde ça pour mon équipe
+@sth utilise notre méthode de revue sur ce changement
+@sth connecte-moi puis reprends la sauvegarde
+```
+
+You can also send just `@sth` when the preceding discussion already establishes
+the task. Claude keeps that conversation context, chooses the STH workflow and
+performs the authorized actions. If the intended action is unclear, it asks one
+specific question. A mention by itself does not authorize uploading a transcript.
+
+When a local plugin connection needs authentication, Claude inspects it and
+launches the supported OAuth login. You complete browser authorization; Claude
+then checks the connection and resumes the original task. A server-side OAuth
+configuration failure still needs fixing before login can complete.
+
+Claude picks [the contextual workflow](skills/sth/SKILL.md) from its skill
+description, which names the literal `@sth`. Send the text without selecting an
+unrelated file from the `@` autocomplete, or type `/sth:sth` to invoke the skill
+directly. The plugin ships no hooks: the Claude plugin directory accepts them
+only from Verified organizations. Other hosts use the same skill and
+natural-language requests.
+
+For a session using this checkout directly, launch `claude --plugin-dir .` from
+the repository. Installed copies need updating/reloading to pick up changes.
+
+Source: [Claude Code OAuth login](https://code.claude.com/docs/en/mcp#authenticate-from-the-command-line).
+
+## ChatGPT / Codex version
+
+```sh
+npm run build:openai
+```
+
+This produces `dist/sth-openai-0.1.5.tar.gz`, ready for private creation through
+Plugin Creator. It includes search/save, transfer, connection diagnostics, and
+library curation as skills. See [the OpenAI guide](docs/openai.md) for account
+creation, OAuth connection, local installation, and verification.
+
+For public review preparation, `npm run build:openai:public` creates a separate
+draft ZIP and a readiness report. The current draft still needs updated legal
+pages and a real hosted demo; it has not been submitted. See the
+[publication audit](docs/openai-publication-audit.md) and
+[review walkthrough](docs/openai-review.md).
+
+## Save and share from Claude
+
+Install STH, connect your STH account, then use normal language in chat,
+Cowork or Claude Code:
+
+- “Sauvegarde ce prompt dans STH pour mon équipe.”
+- “Garde cette méthode pour qu'on puisse la réutiliser.”
+- “Partage ce résultat dans la bibliothèque STH de mon équipe.”
+- “Retrouve notre prompt de revue de code et utilise-le ici.”
+
+Claude prepares a reusable text entry, checks for duplicates, and saves the
+content you authorized. If the content or intended audience is unclear, it
+asks one focused question. On success it reports the saved title and the
+identifier returned by STH. You can also select a plugin skill with `/` or `+`.
+The commands are `find`, `save`, `share`, `install`, `transfer` and `doctor`;
+`install` puts a team package into the project through the `sth` CLI. `share`
+uses the same organization library flow and reuses an existing save receipt
+when the same item was already saved in this conversation.
+Skills and commands work in all three Claude hosts; sub-agents run only in
+Cowork and Claude Code. The library flow does not require them.
+See [Claude's plugin guide](https://support.claude.com/en/articles/13837440-use-plugins-in-claude).
+
+“Share with my team” means saving to the connected **STH organization**, where
+members with access can find it. It does not send a message, invite a person,
+create a public link, or share the Claude conversation. `library_save` accepts
+text (`prompt` or `artifact`); it cannot upload a PDF, image or other binary
+file. Newer STH servers also expose `library_update` and `library_archive`, so
+a correction changes the existing entry instead of saving a duplicate; with an
+older server, Claude says so and offers a new entry. There is no sharing tool,
+and a save returns an item ID rather than a share URL.
+
+For chat and Cowork, open **Customize > Connectors > STH > Connect**, complete
+sign-in, then enable STH in the conversation's **+ > Connectors** menu. If STH
+is missing, follow the [connection guide](skills/sth-library/reference/connection.md).
+In Claude Code, `@sth` handles connection diagnosis and supported login; `/mcp`
+is the fallback for host operations the agent cannot perform itself.
+Installing the plugin alone does not prove that the connection is ready.
+
+## What it connects to
+
+`https://mcp.skillsth.com/api/mcp` — a remote MCP server over Streamable HTTP,
+authenticated with OAuth 2.1. The package carries **no token and no secret**:
+each client negotiates its own login, and the Agent Plugins specification is
+explicit that header values in `mcp.json` are visible package data, not a
+portable secret mechanism.
+
+Using the tools needs an active STH organization, a valid membership, the MCP
+connector enabled for that organization, and the `remote_mcp` capability. A
+member without those gets an empty toolbox rather than tools that fail on use.
+
+## Install
+
+| Client | Command |
+| --- | --- |
+| Claude chat / Cowork | **Customize > Plugins > Add > Add marketplace**, add `Skills-transfer-hub/sth-plugin`, then add STH; in Cowork, open the Cowork tab first |
+| Claude Code | `/plugin marketplace add Skills-transfer-hub/sth-plugin` then `/plugin install sth@skillsth` |
+| Buddy (Claude Code usage panel) | same marketplace, then `/plugin install sth-usage@skillsth` (Claude Code 2.1.287 or later) |
+| ChatGPT | Create a private plugin from `npm run build:openai` using Plugin Creator, then install and connect STH |
+| Codex (local source) | `codex plugin marketplace add .` then `codex plugin add sth@skillsth` from this repository |
+| Cursor | install from the Customize page, or from this git URL |
+| Gemini CLI | `gemini extensions install https://github.com/Skills-transfer-hub/sth-plugin` |
+| Antigravity | copy this directory into `.agents/plugins/` or `~/.gemini/config/plugins/` |
+| Kimi | `kimi mcp add`, then copy `skills/` into `~/.agents/skills/` |
+
+## Update an existing Claude Code installation
+
+Version **0.1.5** adds `/sth:install`, in-place corrections when the server exposes `library_update` and `library_archive`, behavior evals, and Buddy in the same marketplace, and removes the Claude hooks: `@sth` now goes through the `sth` skill, and the opt-in capture reminder is gone; 0.1.4 added the native `sth:assistant` agent and the ChatGPT/Codex export; 0.1.3 added the contextual `@sth` workflow and connection recovery.
+For a GitHub marketplace installation, refresh the catalog and update STH:
+
+```sh
+claude plugin marketplace update skillsth
+claude plugin update sth@skillsth
+```
+
+Restart Claude Code to load the updated plugin. The first OAuth authorization
+still takes place in your browser; saved credentials are managed by Claude.
+Local folder installations read from that folder instead of the public cache.
+
+## Claude plugin directory
+
+The directory reads the plugin from the `claude-directory` branch, not `main`.
+It scans every file on the branch it tracks, and from an organization that is
+not Verified it refuses hooks, scripts, tests, other file types, unknown config
+fields and multi-line front matter. After a release lands on `main`:
+
+```sh
+npm run build:claude
+git push origin claude-directory
+```
+
+`build:claude` commits the plugin files listed in `CLAUDE_DIRECTORY_FILES`
+(`scripts/manifest-helpers.mjs`), as committed at `HEAD`, onto that branch.
+`tests/claude-code.test.mjs` checks those files against the directory's rules.
+
+## Why there are five manifests
+
+There is no single plugin format. **Agent Plugins 1.0** (OpenAI, Microsoft, AWS,
+Cursor, Vercel) covers Codex, Cursor, Copilot, VS Code and Kiro. Anthropic and
+Google each kept their own. None of the files collide, so one directory serves
+all of them:
+
+| File | Read by |
+| --- | --- |
+| `plugin.json` | Agent Plugins 1.0 clients **and** Antigravity |
+| `mcp.json` | Agent Plugins 1.0 clients, Cursor |
+| `mcp_config.json` | Antigravity |
+| `.mcp.json` | Claude Code |
+| `gemini-extension.json` | Gemini CLI |
+| `.claude-plugin/` | Claude Code (manifest + marketplace) |
+| `.cursor-plugin/plugin.json` | Cursor's richer native format |
+| `.codex-plugin/plugin.json` | Codex's native format |
+| `.agents/plugins/marketplace.json` | ChatGPT desktop / Codex local marketplace |
+| `skills/` | **all of them** |
+
+An Agent Plugins manifest is also a valid Antigravity manifest — Antigravity
+requires only `name` at the root, which the specification already mandates — so
+the two share one file. `mcp.json` and `mcp_config.json` hold identical content;
+`.mcp.json` declares the same server in Claude Code's own shape (`"type": "http"`,
+no `$schema`).
+
+This deviates from the specification on one point: it puts client-specific
+files at their native paths rather than under reverse-domain directories
+(`com.anthropic.claude-code/`). Those clients do not look in the namespaced
+location, and conformant clients must ignore files they do not recognise.
+
+## Tests
+
+```sh
+npm test              # package checks, no dependencies
+npm run check:reference
+npm run build:openai   # requires tar; available on macOS and Linux
+```
+
+The suite checks package structure and declared client contracts. It does not
+prove OAuth, live STH access, or the full flow in each host. One file per contract:
+
+| File | Holds |
+| --- | --- |
+| `tests/package.test.mjs` | one identity across five manifests, MCP files that agree, no credentials anywhere |
+| `tests/agent-plugins.test.mjs` | Agent Plugins 1.0: closed field set, declared transports, skills discoverable at exactly one level |
+| `tests/claude-code.test.mjs` | manifest pointers resolve, marketplace entry, and the files the Claude plugin directory receives follow its rules |
+| `tests/portable-skills.test.mjs` | shared skill discovery, connection limits and protection against instructions in retrieved content |
+| `tests/native-formats.test.mjs` | Antigravity, Gemini CLI, Cursor, Codex, and Kimi's portability constraint |
+| `tests/skills.test.mjs` | front matter, description quality, non-overlapping triggers, no tool named that the server does not expose |
+| `tests/reference.test.mjs` | the compatibility file matches the generator; the matrix is internally coherent |
+| `tests/install.test.mjs` | one case per install command in the table above |
+| `tests/identity.test.mjs` | the declared repository is the one this clone actually came from |
+| `tests/openai.test.mjs` | OpenAI metadata, theme assets, portable export contents, and safe packaging |
+
+`skills/sth-transfer/reference/compatibility.md` is **generated** by
+`scripts/build-reference.mjs` from `data/sth-capabilities-v1.json`. Do not edit
+it by hand — the test fails when it drifts.
+
+### Behavior evals
+
+`npm test` checks the package; `evals/` checks what Claude does with it. Each
+case runs Claude with and without the plugin against mocked STH tools
+(`evals/mocks/sth/`, overridden per case), so no account or network access is
+needed:
+
+```sh
+claude plugin eval . --judge-model sonnet --no-publish
+```
+
+The cases cover one save with a real receipt, a connection check that writes
+nothing, reusing the team's prompt before writing a new one, ignoring
+instructions planted in a library item, a bare `@sth`, installing a package
+without faking it, renaming instead of duplicating, and refusing an unsupported
+conversion. A full run makes 8 cases × 3 runs × 2 arms of real model calls;
+`--runs 1` is a cheaper smoke test.
+
+## Known gaps
+
+**Client verification is separate from packaging.** The repository now includes
+the documented Codex marketplace at `.agents/plugins/marketplace.json`.
+A successful export or private plugin creation does not prove OAuth login or
+runtime behavior in ChatGPT and Codex. Use the [connection checks](docs/openai.md).
+
+**The endpoint is not configurable through the plugin.** Its MCP configuration
+and connection guide use production. Library actions use tool names, so a
+self-hosted STH connector can supply them. Configure your own server with:
+
+```sh
+claude mcp add --transport http sth https://your-host/api/mcp
+```
+
+Install the plugin for the skills, point `sth` at your own server, and the two
+compose. Doing it through `userConfig` instead is still untested: the CLI
+reports the raw `${user_config.…}` string rather than the resolved one, so how
+an unset value interpolates at connect time is unknown, and an empty URL would
+break every install. Two things were established: `description` is **required**
+on a `userConfig` entry, and an unset optional one does not block the install.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
