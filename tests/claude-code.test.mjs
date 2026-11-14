@@ -79,9 +79,14 @@ describe('Claude plugin directory', () => {
     }
   })
 
-  test('every front matter block is plain key: value lines', () => {
+  test('front matter is plain key: value lines, in keys the directory accepts', () => {
+    // It refused `skills:` on an agent without naming the key; keys that give a
+    // component more than text (skills, hooks, mcpServers, permissionMode) go too.
+    const allowed = { skills: ['name', 'description'], commands: ['name', 'description'], agents: ['name', 'description', 'model'] }
     for (const file of files.filter((path) => path.endsWith('.md'))) {
-      assert.doesNotThrow(() => frontmatter(read(file)), file)
+      for (const key of Object.keys(frontmatter(read(file)) ?? {})) {
+        assert.ok(allowed[file.split('/')[0]]?.includes(key), `${file}: the directory may refuse "${key}"`)
+      }
     }
   })
 
