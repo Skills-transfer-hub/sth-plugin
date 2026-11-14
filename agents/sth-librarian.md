@@ -1,9 +1,6 @@
 ---
 name: sth-librarian
-description: >-
-  Curates the team STH library: finds near-duplicates, proposes merges, and
-  spots entries whose title or provenance make them unfindable. Use when asked
-  to tidy, audit or review the library rather than to use one item from it.
+description: Curates the team STH library — finds near-duplicates, proposes merges, and spots entries whose title or provenance make them unfindable. Use when asked to tidy, audit or review the library rather than to use one item from it.
 model: sonnet
 ---
 

@@ -1,13 +1,6 @@
 ---
 name: sth-transfer
-description: >-
-  Use when moving or converting an agent, command, instruction, rule, skill or
-  workflow between AI coding tools, or installing a team package from STH into
-  this project — "port this skill to Codex", "does this rule work in Cursor",
-  "make this a Copilot instruction", "installe notre skill de revue ici",
-  "where does this install", "will this survive the conversion". Reads the STH
-  compatibility matrix first, so lossy and unsupported conversions are named
-  instead of silently botched.
+description: Use when moving or converting an agent, command, instruction, rule, skill or workflow between AI coding tools, or installing a team package from STH into this project — "port this skill to Codex", "does this rule work in Cursor", "make this a Copilot instruction", "installe notre skill de revue ici", "where does this install", "will this survive the conversion". Reads the STH compatibility matrix first, so lossy and unsupported conversions are named instead of silently botched.
 ---
 
 # Porting artifacts between AI coding tools

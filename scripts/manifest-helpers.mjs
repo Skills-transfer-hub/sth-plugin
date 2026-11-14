@@ -36,8 +36,28 @@ export const IDENTITY_MANIFESTS = [
   '.codex-plugin/plugin.json',
 ]
 
-/** The three names the same MCP configuration is published under. */
-export const MCP_MANIFESTS = ['mcp.json', 'mcp_config.json', '.mcp.json']
+/**
+ * The two names the Agent Plugins MCP configuration is published under.
+ * Claude Code's `.mcp.json` declares the same server in its own shape.
+ */
+export const MCP_MANIFESTS = ['mcp.json', 'mcp_config.json']
+
+/**
+ * Everything the Claude plugin directory receives. It scans every file at the
+ * root of the branch it tracks, and from an organization that is not Verified
+ * it refuses tests, scripts, hooks and other client formats, so it tracks a
+ * branch that scripts/build-claude.mjs builds from these paths only.
+ */
+export const CLAUDE_DIRECTORY_FILES = [
+  '.claude-plugin/plugin.json',
+  '.claude-plugin/icon.png',
+  '.mcp.json',
+  'skills',
+  'commands',
+  'agents',
+  'README.md',
+  'LICENSE',
+]
 
 export function skillNames() {
   return readdirSync(join(ROOT, 'skills'))
@@ -46,32 +66,20 @@ export function skillNames() {
 }
 
 /**
- * Enough YAML for an Agent Skill's front matter: `key: value` and the folded
- * (`>-`) and literal (`|`) block scalars used for long descriptions. Anything
- * richer than that does not belong in a front matter block that six different
- * clients have to agree on, so failing to parse it is the correct outcome.
+ * Front matter as plain one-line `key: value` pairs, the only form the Claude
+ * plugin directory accepts from an organization that is not Verified. Block
+ * scalars (`>-`, `|`), lists, blank lines, comments, and values holding `: ` or
+ * ` #` (which YAML reads as a mapping or a comment) fail to parse here, so the
+ * tests refuse them before the directory does.
  */
 export function frontmatter(text) {
   const match = /^---\n([\s\S]*?)\n---\n/.exec(text)
   if (!match) return null
   const fields = {}
-  const lines = match[1].split('\n')
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index]
-    if (!line.trim() || line.startsWith('#')) continue
-    const pair = /^([A-Za-z][\w-]*):\s*(.*)$/.exec(line)
-    if (!pair) throw new Error(`Unparsable front matter line: ${line}`)
-    const [, key, rawValue] = pair
-    if (rawValue === '>-' || rawValue === '>' || rawValue === '|' || rawValue === '|-') {
-      const block = []
-      while (index + 1 < lines.length && /^\s+\S/.test(lines[index + 1])) {
-        block.push(lines[index + 1].trim())
-        index += 1
-      }
-      fields[key] = rawValue.startsWith('|') ? block.join('\n') : block.join(' ')
-    } else {
-      fields[key] = rawValue.replace(/^["']|["']$/g, '')
-    }
+  for (const line of match[1].split('\n')) {
+    const pair = /^([A-Za-z][\w-]*): ((?![>|[{])(?:(?!: | #).)+)$/.exec(line)
+    if (!pair) throw new Error(`Front matter must be plain key: value lines: ${line}`)
+    fields[pair[1]] = pair[2].replace(/^["']|["']$/g, '')
   }
   return fields
 }

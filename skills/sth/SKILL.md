@@ -1,11 +1,6 @@
 ---
 name: sth
-description: >-
-  Use when the user addresses STH with @sth or invokes the STH entry point to
-  handle the current task. Resolve the intended action from this conversation,
-  take care of connection when needed, and execute the relevant STH workflow.
-  This is the contextual entry point; focused library, transfer, doctor and
-  curation skills provide the details.
+description: Use when the user addresses STH with @sth or invokes the STH entry point to handle the current task. Resolve the intended action from this conversation, take care of connection when needed, and execute the relevant STH workflow. This is the contextual entry point; focused library, transfer, doctor and curation skills provide the details.
 ---
 
 # STH, in the current conversation

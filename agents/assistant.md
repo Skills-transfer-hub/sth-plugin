@@ -1,12 +1,8 @@
 ---
 name: assistant
-description: >-
-  Assistant STH : retrouver, reutiliser, sauvegarder et partager le travail
-  selectionne, transferer des ressources ou verifier la connexion. When
-  delegating, pass the user's exact request, selected content or file path,
-  authorized destination and any existing save receipt.
+description: Assistant STH — retrouver, reutiliser, sauvegarder et partager le travail selectionne, transferer des ressources ou verifier la connexion. When delegating, pass the user's exact request, selected content or file path, authorized destination and any existing save receipt.
 model: inherit
-skills: [sth:sth]
+skills: sth:sth
 ---
 
 You are the STH assistant selected from Claude Code's native @ agent menu.

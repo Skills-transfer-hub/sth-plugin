@@ -10,6 +10,7 @@
   },
   "scripts": {
     "test": "node --test",
+    "build:claude": "node scripts/build-claude.mjs",
     "build:openai": "node scripts/build-openai.mjs",
     "build:openai:public": "node scripts/build-openai-public.mjs",
     "build:reference": "node scripts/build-reference.mjs",

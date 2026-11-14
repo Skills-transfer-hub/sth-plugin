@@ -5,8 +5,8 @@ GitHub Copilot, VS Code, Kiro, Antigravity and Gemini CLI. It wires up
 the STH remote MCP connector and ships the skills that tell an agent when to
 reach for it.
 
-Five portable skills, six commands, an STH assistant and a curating sub-agent, a Claude mention
-hook, an opt-in capture reminder, and the MCP connector. A dedicated ChatGPT/Codex export packages the
+Five portable skills, six commands, an STH assistant and a curating sub-agent,
+and the MCP connector. A dedicated ChatGPT/Codex export packages the
 skills and remote connector with STH icons for light and dark themes.
 
 ## Quick start
@@ -65,21 +65,17 @@ launches the supported OAuth login. You complete browser authorization; Claude
 then checks the connection and resumes the original task. A server-side OAuth
 configuration failure still needs fixing before login can complete.
 
-Implementation: a `UserPromptSubmit` hook recognizes the literal `@sth` token
-and adds [the contextual workflow](skills/sth/SKILL.md) to the main conversation.
-It requires **Node.js 20+ on PATH**, runs only for an explicit mention in prose,
-and does not read transcripts or contact STH itself. Markdown blockquotes, code
-examples, file paths and email addresses do not activate it. Hooks must be enabled. This does
-not add a plugin chip to Claude's `@` autocomplete; send the literal text without
-selecting an unrelated file. `/sth:sth` is the native skill alternative.
+Claude picks [the contextual workflow](skills/sth/SKILL.md) from its skill
+description, which names the literal `@sth`. Send the text without selecting an
+unrelated file from the `@` autocomplete, or type `/sth:sth` to invoke the skill
+directly. The plugin ships no hooks: the Claude plugin directory accepts them
+only from Verified organizations. Other hosts use the same skill and
+natural-language requests.
 
 For a session using this checkout directly, launch `claude --plugin-dir .` from
 the repository. Installed copies need updating/reloading to pick up changes.
-The literal mention hook is specific to Claude Code; other hosts can use the
-same skill and natural-language requests without relying on hooks.
 
-Sources: [prompt hooks](https://code.claude.com/docs/en/hooks#userpromptsubmit),
-[Claude Code OAuth login](https://code.claude.com/docs/en/mcp#authenticate-from-the-command-line).
+Source: [Claude Code OAuth login](https://code.claude.com/docs/en/mcp#authenticate-from-the-command-line).
 
 ## ChatGPT / Codex version
 
@@ -116,8 +112,8 @@ The commands are `find`, `save`, `share`, `install`, `transfer` and `doctor`;
 `install` puts a team package into the project through the `sth` CLI. `share`
 uses the same organization library flow and reuses an existing save receipt
 when the same item was already saved in this conversation.
-Skills and commands work in all three Claude hosts; hooks and sub-agents run
-only in Cowork and Claude Code. The library flow does not require either.
+Skills and commands work in all three Claude hosts; sub-agents run only in
+Cowork and Claude Code. The library flow does not require them.
 See [Claude's plugin guide](https://support.claude.com/en/articles/13837440-use-plugins-in-claude).
 
 “Share with my team” means saving to the connected **STH organization**, where
@@ -164,7 +160,7 @@ member without those gets an empty toolbox rather than tools that fail on use.
 
 ## Update an existing Claude Code installation
 
-Version **0.1.5** adds `/sth:install`, in-place corrections when the server exposes `library_update` and `library_archive`, behavior evals, and Buddy in the same marketplace; 0.1.4 added the native `sth:assistant` agent and the ChatGPT/Codex export; 0.1.3 added the contextual `@sth` workflow and connection recovery.
+Version **0.1.5** adds `/sth:install`, in-place corrections when the server exposes `library_update` and `library_archive`, behavior evals, and Buddy in the same marketplace, and removes the Claude hooks: `@sth` now goes through the `sth` skill, and the opt-in capture reminder is gone; 0.1.4 added the native `sth:assistant` agent and the ChatGPT/Codex export; 0.1.3 added the contextual `@sth` workflow and connection recovery.
 For a GitHub marketplace installation, refresh the catalog and update STH:
 
 ```sh
@@ -175,6 +171,22 @@ claude plugin update sth@skillsth
 Restart Claude Code to load the updated plugin. The first OAuth authorization
 still takes place in your browser; saved credentials are managed by Claude.
 Local folder installations read from that folder instead of the public cache.
+
+## Claude plugin directory
+
+The directory reads the plugin from the `claude-directory` branch, not `main`.
+It scans every file on the branch it tracks, and from an organization that is
+not Verified it refuses hooks, scripts, tests, other file types, unknown config
+fields and multi-line front matter. After a release lands on `main`:
+
+```sh
+npm run build:claude
+git push origin claude-directory
+```
+
+`build:claude` commits the plugin files listed in `CLAUDE_DIRECTORY_FILES`
+(`scripts/manifest-helpers.mjs`), as committed at `HEAD`, onto that branch.
+`tests/claude-code.test.mjs` checks those files against the directory's rules.
 
 ## Why there are five manifests
 
@@ -198,8 +210,9 @@ all of them:
 
 An Agent Plugins manifest is also a valid Antigravity manifest — Antigravity
 requires only `name` at the root, which the specification already mandates — so
-the two share one file. The three MCP files hold identical content under three
-names.
+the two share one file. `mcp.json` and `mcp_config.json` hold identical content;
+`.mcp.json` declares the same server in Claude Code's own shape (`"type": "http"`,
+no `$schema`).
 
 This deviates from the specification on one point: it puts client-specific
 files at their native paths rather than under reverse-domain directories
@@ -219,10 +232,9 @@ prove OAuth, live STH access, or the full flow in each host. One file per contra
 
 | File | Holds |
 | --- | --- |
-| `tests/package.test.mjs` | one identity across five manifests, three MCP files that agree, no credentials anywhere |
+| `tests/package.test.mjs` | one identity across five manifests, MCP files that agree, no credentials anywhere |
 | `tests/agent-plugins.test.mjs` | Agent Plugins 1.0: closed field set, declared transports, skills discoverable at exactly one level |
-| `tests/claude-code.test.mjs` | manifest pointers resolve and do not duplicate a conventional path, marketplace entry, the hook runs on an event that reaches the model and stays opt-in |
-| `tests/mention.test.mjs` | literal mention detection, exclusions, real hook execution, context delivery and failure behavior |
+| `tests/claude-code.test.mjs` | manifest pointers resolve, marketplace entry, and the files the Claude plugin directory receives follow its rules |
 | `tests/portable-skills.test.mjs` | shared skill discovery, connection limits and protection against instructions in retrieved content |
 | `tests/native-formats.test.mjs` | Antigravity, Gemini CLI, Cursor, Codex, and Kimi's portability constraint |
 | `tests/skills.test.mjs` | front matter, description quality, non-overlapping triggers, no tool named that the server does not expose |

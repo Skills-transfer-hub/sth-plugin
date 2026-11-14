@@ -18,13 +18,5 @@
     "mcp",
     "team"
   ],
-  "mcpServers": "./.mcp.json",
-  "userConfig": {
-    "capture_on_stop": {
-      "type": "boolean",
-      "title": "Offer to save reusable work to the library at the end of a session",
-      "description": "Off by default. When on, Claude is reminded once per session to propose saving anything reusable it produced.",
-      "required": false
-    }
-  }
+  "mcpServers": "./.mcp.json"
 }

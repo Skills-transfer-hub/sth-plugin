@@ -1,11 +1,6 @@
 ---
 name: sth-doctor
-description: >-
-  Use when STH is disconnected, its tools are missing, a library call fails, or
-  the user asks to diagnose STH access — "why is STH unavailable", "I cannot
-  save", "check the connector". Diagnose connection and permissions from
-  observed evidence. Use sth-library for ordinary retrieval or saving and
-  sth-curate for reviewing the contents of the collection.
+description: Use when STH is disconnected, its tools are missing, a library call fails, or the user asks to diagnose STH access — "why is STH unavailable", "I cannot save", "check the connector". Diagnose connection and permissions from observed evidence. Use sth-library for ordinary retrieval or saving and sth-curate for reviewing the contents of the collection.
 ---
 
 # Diagnose STH access

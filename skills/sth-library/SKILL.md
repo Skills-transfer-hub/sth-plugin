@@ -1,14 +1,6 @@
 ---
 name: sth-library
-description: >-
-  Use when the user wants to find, reuse, save, share, correct or retire work in
-  STH, or asks for a prompt, skill or rule the team may already have: "save
-  this", "sauvegarde ça dans STH", "partage ce travail avec mon équipe", "find
-  our review prompt", "écris-moi un prompt de revue", "renomme ce prompt dans
-  STH". Covers prompts, skills, notes, reports and other reusable text through
-  library_search, library_get, library_save, library_update, library_archive,
-  asset_search and asset_get. Also use when proposing to keep a useful result
-  from this session for the team.
+description: Use when the user wants to find, reuse, save, share, correct or retire work in STH, or asks for a prompt, skill or rule the team may already have — "save this", "sauvegarde ça dans STH", "partage ce travail avec mon équipe", "find our review prompt", "écris-moi un prompt de revue", "renomme ce prompt dans STH". Covers prompts, skills, notes, reports and other reusable text through library_search, library_get, library_save, library_update, library_archive, asset_search and asset_get. Also use when proposing to keep a useful result from this session for the team.
 ---
 
 # The team STH library

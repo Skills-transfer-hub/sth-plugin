@@ -1,11 +1,6 @@
 ---
 name: sth-curate
-description: >-
-  Use when the user asks to audit, tidy or review the team STH collection for
-  duplicate entries, unclear titles or missing provenance — "clean up our
-  library", "find duplicate prompts", "audit the library". Produces a curation
-  proposal. Use sth-library to find, reuse or save one item, and sth-doctor for
-  connection or permission failures.
+description: Use when the user asks to audit, tidy or review the team STH collection for duplicate entries, unclear titles or missing provenance — "clean up our library", "find duplicate prompts", "audit the library". Produces a curation proposal. Use sth-library to find, reuse or save one item, and sth-doctor for connection or permission failures.
 ---
 
 # Review the team STH library

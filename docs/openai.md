@@ -62,10 +62,9 @@ instructions, and explicitly say installation has not been executed.
 ## Compatibility and validation limits
 
 OpenAI presentation lives in `extensions.com.openai.interface`; its compatibility
-copy is `.codex-plugin/plugin.json`. The export excludes other clients' commands,
-agents, and shell hooks. Their useful workflows are included as skills, and
-OpenAI hooks are explicitly empty so a source install does not discover the
-Claude-specific optional hook.
+copy is `.codex-plugin/plugin.json`. The export excludes other clients' commands
+and agents. Their useful workflows are included as skills, and OpenAI hooks
+are explicitly empty.
 
 Automated tests validate packaging and source contracts. They do not establish
 OAuth login, account installation, real tool execution, or behavior in every

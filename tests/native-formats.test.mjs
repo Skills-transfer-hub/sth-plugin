@@ -84,10 +84,9 @@ describe('Codex', () => {
     }
   })
 
-  test('OpenAI skips the optional Claude hook in a source install', () => {
+  test('OpenAI declares no hooks', () => {
     assert.deepEqual(manifest.hooks, [])
     assert.deepEqual(json('plugin.json').extensions['com.openai'].hooks, [])
-    assert.ok(exists('hooks/hooks.json'))
   })
 
   test('the Agent Plugins root manifest agrees with it', () => {
